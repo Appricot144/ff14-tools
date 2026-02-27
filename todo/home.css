@@ -1,0 +1,257 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+  /* Base */
+  --light: #f6f6f9;
+  --dark: #363949;
+  --dark-grey: #aaaaaa;
+  --grey: #eee;
+
+  /* Semantic */
+  --primary: #4f72e3;
+  --success: #2eb884;
+  --warning: #f0a500;
+  --danger: #e8445a;
+  --info: #3db8d4;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Noto Sans", sans-serif;
+}
+
+.ph {
+  font-size: 1.7rem;
+}
+
+a {
+  text-decoration: none;
+}
+
+li {
+  text-decoration: none;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--grey);
+  overflow-x: hidden;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: var(--light);
+  width: 230px;
+  height: 100%;
+  scrollbar-width: none;
+  transition: all 0.3s ease;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar.close {
+  width: 60px;
+}
+
+.sidebar .logo {
+  font-size: 24px;
+  font-weight: 700;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  color: var(--primary);
+  padding-bottom: 20px;
+  box-sizing: content-box;
+}
+
+.sidebar .logo .logo-name span {
+  color: var(--dark);
+}
+
+.sidebar .logo .ph {
+  min-width: 60px;
+  display: flex;
+  justify-content: center;
+  font-size: 2.2rem;
+}
+
+.sidebar .side-menu li {
+  height: 48px;
+  background: transparent;
+  margin-left: 6px;
+  border-radius: 48px 0 0 48px;
+  padding: 4px;
+}
+
+.sidebar .side-menu li.active {
+  background: var(--grey);
+  position: relative;
+}
+
+.sidebar .side-menu li.active::before {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  top: -40px;
+  right: 0;
+  box-shadow: 20px 20px 0 var(--grey);
+  z-index: -1;
+}
+
+.sidebar .side-menu li.active::after {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  bottom: -40px;
+  right: 0;
+  box-shadow: 20px -20px 0 var(--grey);
+  z-index: -1;
+}
+
+.sidebar .side-menu li a {
+  width: 100%;
+  height: 100%;
+  background: var(--light);
+  display: flex;
+  align-items: center;
+  border-radius: 48px;
+  font-size: 16px;
+  color: var(--dark);
+  white-space: nowrap;
+  overflow-x: hidden;
+  transition: all 0.3s ease;
+}
+
+.sidebar .side-menu li.active a {
+  color: var(--success);
+}
+
+.sidebar.close .side-menu li a {
+  width: calc(48px - (4px * 2));
+  transition: all 0.3s ease;
+}
+
+.sidebar .side-menu li a .ph {
+  min-width: calc(60px - ((4px + 6px) * 2));
+  display: flex;
+  font-size: 1.6rem;
+  justify-content: center;
+}
+
+.content {
+  position: relative;
+  width: calc(100% - 230px);
+  left: 230px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.close ~ .content {
+  width: calc(100% - 60px);
+  left: 60px;
+}
+
+.content nav {
+  height: 56px;
+  background: var(--light);
+  padding: 0 24px 0 0;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  left: 0;
+}
+
+.content nav:before {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  bottom: -40px;
+  left: 0;
+  border-radius: 50%;
+  box-shadow: -20px -20px 0 var(--light);
+}
+
+.content nav a {
+  color: var(--dark);
+}
+
+.content nav .ph.ph-list {
+  cursor: pointer;
+  color: var(--dark);
+}
+
+.content nav form {
+  max-width: 400px;
+  width: 100%;
+  margin-right: auto;
+}
+
+.content nav form .form-input {
+  display: flex;
+  align-items: center;
+  height: 36px;
+}
+
+.content nav form .form-input input {
+  flex-grow: 1;
+  padding: 0 16px;
+  height: 100%;
+  border: none;
+  background: var(--grey);
+  border-radius: 36px 0 0 36px;
+  outline: none;
+  width: 100%;
+  color: var(--dark);
+}
+
+.content nav form .form-input button {
+  width: 80px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--primary);
+  color: var(--light);
+  font-size: 18px;
+  border: none;
+  outline: none;
+  border-radius: 0 36px 36px 0;
+  cursor: pointer;
+}
+
+.content nav button {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.content nav .profile {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.content main {
+  width: 100%;
+  padding: 36px 24px;
+  max-height: calc(100vh - 56px);
+}
