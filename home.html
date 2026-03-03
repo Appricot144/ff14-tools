@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"
+    />
+    <link rel="stylesheet" href="home.css" />
+    <title>Todo</title>
+  </head>
+  <body>
+    <div class="sidebar">
+      <a href="#" class="logo">
+        <i class="ph ph-check-square"></i>
+        <div class="logo-name"><span>Tools</span></div>
+      </a>
+
+      <ul class="side-menu">
+        <li>
+          <a href="#"><i class="ph ph-check-square"></i>Todo</a>
+        </li>
+        <li>
+          <a href="#"><i class="ph ph-git-commit"></i>Rotation Plannner</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="content">
+      <nav>
+        <i class="ph ph-list"></i>
+
+        <form action="#">
+          <div class="form-input">
+            <input type="search" placeholder="Search..." />
+            <button class="search-btn" type="submit">
+              <i class="ph ph-magnifying-glass"></i>
+            </button>
+          </div>
+        </form>
+        <button id="thema-btn"><i class="ph ph-sun"></i></button>
+        <button id="github-btn"><i class="ph-fill ph-github-logo"></i></button>
+        <a href="#" class="profile"><i class="ph-fill ph-user-circle"></i></a>
+      </nav>
+
+      <main></main>
+    </div>
+  </body>
+</html>
