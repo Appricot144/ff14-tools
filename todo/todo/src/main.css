@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
 
 :root {
   /* Base */
@@ -16,9 +16,20 @@
   --info: #3db8d4;
 }
 
+/* tailwind thema */
+@theme {
+  --color-light: var(--light);
+  --color-dark: var(--dark);
+  --color-dark-grey: var(--dark-grey);
+  --color-grey: var(--grey);
+  --color-primary: var(--primary);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+}
+
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   font-family: "Noto Sans", sans-serif;
 }

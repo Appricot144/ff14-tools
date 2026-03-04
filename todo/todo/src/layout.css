@@ -147,7 +147,7 @@
 
 .content nav .icon {
   cursor: pointer;
-  color: var(--dark);
+  color: var(--dark-grey);
 }
 
 .content nav form {
@@ -196,7 +196,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: none;
   outline: none;
   border-radius: 10px;
   cursor: pointer;
@@ -216,8 +215,10 @@
   border-radius: 10%;
 }
 
-.content main {
-  width: 100%;
-  padding: 36px 24px;
+main {
+  position: relative;
+  width: calc(100% - 230px);
   max-height: calc(100vh - 56px);
+  left: 230px;
+  padding: 24px 24px;
 }

@@ -39,30 +39,33 @@ export default function Layout() {
 
       <div className="content">
         <nav>
-          <ListIcon className="icon" size={32} />
+          <ListIcon className="icon" size={25} />
 
           <form action="#">
             <div className="form-input">
               <input type="search" placeholder="Search..." />
               <button className="search-btn" type="submit">
-                <MagnifyingGlassIcon size={32} />
+                <MagnifyingGlassIcon size={25} />
               </button>
             </div>
           </form>
           <button id="thema-btn">
-            <SunIcon size={32} />
+            <SunIcon size={25} />
           </button>
           <button id="github-btn">
-            <GithubLogoIcon size={32} />
+            <GithubLogoIcon size={25} />
           </button>
-          <a href="#" className="profile">
-            <UserIcon size={32} />
+          <a
+            href="#"
+            className="profile rounded-full outline-1 outline-dark-grey"
+          >
+            <UserIcon size={25} />
           </a>
         </nav>
-        <main>
-          <Outlet />
-        </main>
       </div>
+      <main>
+        <Outlet />
+      </main>
     </>
   );
 }
