@@ -1,15 +1,6 @@
-import { Task } from "./task";
-
-type Category = "daily" | "weekly" | "monthly";
-
-interface TaskData {
-  id: number;
-  checked: boolean;
-  name?: string;
-  rewards?: string;
-  category: Category;
-  note?: string;
-}
+import { useState } from "react";
+import type { TaskData } from "./data/taskData";
+import { TaskList } from "./taskList";
 
 // dummy data
 const tasklist: TaskData[] = [
@@ -18,100 +9,63 @@ const tasklist: TaskData[] = [
     checked: true,
     name: "Task 1 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
     rewards: "Rewards 1",
-    category: "daily",
+    category: "Daily",
   },
   {
     id: 2,
     checked: false,
     name: "Task 2",
     rewards: "Rewards 2",
-    category: "daily",
+    category: "Daily",
   },
   {
     id: 3,
     checked: false,
     name: "Task 3",
     rewards: "Rewards 3",
-    category: "weekly",
+    category: "Weekly",
   },
   {
     id: 4,
     checked: false,
     name: "Task 4",
     rewards: "Rewards 4",
-    category: "daily",
+    category: "Daily",
   },
   {
     id: 100,
     checked: false,
     name: "inserted Task",
     rewards: "Special Rewards",
-    category: "daily",
+    category: "Daily",
   },
 ];
 
-const taskorder = {
+const initialTaskOrder = {
   daily: [1, 100, 2, 4],
   weekly: [3],
 };
 
 function TodoPage() {
-  const dailyTaskList = tasklist.filter((t) => t.category === "daily");
-  const weeklyTaskList = tasklist.filter((t) => t.category === "weekly");
+  const dailyList = tasklist.filter((t) => t.category === "Daily");
+  const weeklyList = tasklist.filter((t) => t.category === "Weekly");
 
   // TODO : implement drag and drop to reorder tasks
   // TODO : implement reset task check after limit
 
   return (
-    <>
-      <div className="bg-light rounded-2xl p-5">
-        <div
-          id="dailyHeader"
-          className="flex justify-between items-end border-b-2 border-dark-grey pb-2 mb-4"
-        >
-          <div className="flex items-end gap-5">
-            <h1 className="text-4xl font-bold">Daily</h1>
-            <div className="bg-success text-light rounded-xl px-2">
-              {dailyTaskList.filter((t) => t.checked).length}/
-              {dailyTaskList.length}
-            </div>
-          </div>
-          <button className="bg-primary text-light px-3 py-1 rounded-xl flex items-center">
-            new
-          </button>
-        </div>
-        <div id="dailyBody" className="mb-5">
-          {taskorder.daily.map((id) => {
-            const task = tasklist.find((t) => t.id === id);
-            if (!task) return null;
-            return (
-              <Task key={task.id} name={task.name} rewards={task.rewards} />
-            );
-          })}
-        </div>
-        <div
-          id="weeklyHeader"
-          className="flex justify-between items-end border-b-2 border-dark-grey pb-2 mb-4"
-        >
-          <div className="flex items-end gap-5">
-            <h1 className="text-4xl font-bold">Weekly</h1>
-            <div className="bg-info text-light rounded px-2">4/15</div>
-          </div>
-          <button className="bg-primary text-light px-3 py-1 rounded flex items-center">
-            new
-          </button>
-        </div>
-        <div id="weeklyBody">
-          {taskorder.weekly.map((id) => {
-            const task = tasklist.find((t) => t.id === id);
-            if (!task) return null;
-            return (
-              <Task key={task.id} name={task.name} rewards={task.rewards} />
-            );
-          })}
-        </div>
-      </div>
-    </>
+    <div className="bg-light rounded-2xl p-5">
+      <TaskList
+        items={dailyList}
+        order={initialTaskOrder.daily}
+        category="Daily"
+      />
+      <TaskList
+        items={weeklyList}
+        order={initialTaskOrder.weekly}
+        category="Weekly"
+      />
+    </div>
   );
 }
 

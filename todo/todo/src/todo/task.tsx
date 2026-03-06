@@ -1,21 +1,30 @@
-import {
-  DotsThreeIcon,
-  DotsSixVerticalIcon,
-  CheckIcon,
-} from "@phosphor-icons/react";
+import { DotsThreeIcon, CheckIcon } from "@phosphor-icons/react";
+import { Button, GridListItem } from "react-aria-components";
+import type { TaskData } from "./data/taskData";
+
+// dummy data
+const deafultData = {
+  name: "task area ...",
+  rewards: "rewards area",
+  checked: false,
+  category: "Daily",
+};
 
 interface TaskProps {
-  name?: string;
-  rewards?: string;
+  task: TaskData;
 }
 
-function Task({ name = "task area ...", rewards = "rewards area" }: TaskProps) {
+function Task({ task }: TaskProps) {
+  const { id, name, rewards } = task || deafultData;
   return (
-    <div className="flex rounded-2xl w-full mb-1">
-      <div className="pt-2">
-        <DotsSixVerticalIcon className="text-dark-grey" size={23} />
-      </div>
-      <div className="flex bg-grey rounded-xl min-w-96 max-w-full px-3 py-2 gap-2">
+    <GridListItem
+      id={id}
+      value={task}
+      textValue={task.name}
+      className="flex rounded-2xl w-full mb-1  selected:border-primary selected:bg-primary/10 selected:border-1 selected:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+    >
+      <Button slot="drag" className="drag"></Button>
+      <div className="flex bg-grey border-1 border-grey rounded-xl min-w-96 max-w-full px-3 py-2 gap-2 hover:bg-grey hover:border-1 hover:border-dark-grey hover:shadow-sm">
         <div className="pt-1.5">
           <input type="checkbox" hidden />
           <button className="flex justify-center items-center rounded-full outline-1 outline-dark-grey bg-light w-5 h-5">
@@ -34,7 +43,7 @@ function Task({ name = "task area ...", rewards = "rewards area" }: TaskProps) {
           </div>
         </div>
       </div>
-    </div>
+    </GridListItem>
   );
 }
 
