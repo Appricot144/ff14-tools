@@ -1,4 +1,10 @@
-type Category = "Daily" | "Weekly" | "Monthly";
+type Category =
+  | "Daily"
+  | "Weekly"
+  | "Monthly"
+  | "Yearly"
+  | "One-time"
+  | "Other";
 
 interface TaskData {
   id: number;
@@ -6,6 +12,7 @@ interface TaskData {
   name?: string;
   rewards?: string;
   category: Category;
+  limit?: Date;
   note?: string;
 }
 

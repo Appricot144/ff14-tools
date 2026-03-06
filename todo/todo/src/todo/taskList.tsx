@@ -11,9 +11,10 @@ interface TaskListProps {
   items: TaskData[];
   order: number[];
   category: string;
+  onChange?: (action: any) => void;
 }
 
-function TaskList({ items, order, category }: TaskListProps) {
+function TaskList({ items, order, category, onChange }: TaskListProps) {
   // Sort items based on order
   const sortedItems = items.sort(
     (a, b) => order.indexOf(a.id) - order.indexOf(b.id),
@@ -89,6 +90,11 @@ function TaskList({ items, order, category }: TaskListProps) {
     },
   });
 
+  const handleCheck = (id: number) => {
+    const target = items.find((t) => t.id === id)!;
+    target.checked = !target.checked;
+  };
+
   return (
     <>
       <div className="flex justify-between items-end border-b-2 border-dark-grey pb-2 mb-4">
@@ -110,7 +116,7 @@ function TaskList({ items, order, category }: TaskListProps) {
           renderEmptyState={() => <p>No tasks ...</p>}
           dragAndDropHooks={dragAndDropHooks}
         >
-          {(item) => <Task task={item} />}
+          {(item) => <Task task={item} onChangeTask={onChange} />}
         </GridList>
       </div>
     </>

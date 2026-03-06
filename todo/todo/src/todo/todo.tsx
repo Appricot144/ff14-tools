@@ -1,6 +1,7 @@
-import { useState } from "react";
-import type { TaskData } from "./data/taskData";
+import { useReducer, useState } from "react";
+import type { Category, TaskData } from "./data/taskData";
 import { TaskList } from "./taskList";
+import { taskReducer } from "./taskReducer";
 
 // dummy data
 const tasklist: TaskData[] = [
@@ -20,7 +21,7 @@ const tasklist: TaskData[] = [
   },
   {
     id: 3,
-    checked: false,
+    checked: true,
     name: "Task 3",
     rewards: "Rewards 3",
     category: "Weekly",
@@ -47,10 +48,11 @@ const initialTaskOrder = {
 };
 
 function TodoPage() {
-  const dailyList = tasklist.filter((t) => t.category === "Daily");
-  const weeklyList = tasklist.filter((t) => t.category === "Weekly");
+  let [tasks, dispatch] = useReducer(taskReducer, tasklist);
 
-  // TODO : implement drag and drop to reorder tasks
+  const dailyList = tasks.filter((t) => t.category === "Daily");
+  const weeklyList = tasks.filter((t) => t.category === "Weekly");
+
   // TODO : implement reset task check after limit
 
   return (
@@ -58,11 +60,13 @@ function TodoPage() {
       <TaskList
         items={dailyList}
         order={initialTaskOrder.daily}
+        onChange={dispatch}
         category="Daily"
       />
       <TaskList
         items={weeklyList}
         order={initialTaskOrder.weekly}
+        onChange={dispatch}
         category="Weekly"
       />
     </div>
