@@ -40,9 +40,13 @@ function TaskList({ items, order, category }: TaskListProps) {
       } else if (e.target.dropPosition === "after") {
         list.moveAfter(e.target.key, e.keys);
       }
+    },
+    onDragEnd(e) {
       // FIXME: store new order to state
-      const newOrder = list.items.map((item) => item.id);
-      console.log("new order:", newOrder);
+      console.log(
+        "new order:",
+        list.items.map((item) => item.id),
+      );
     },
     renderDropIndicator(target) {
       return (
