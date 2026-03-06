@@ -73,10 +73,13 @@ function TaskList({ items, order, category }: TaskListProps) {
     },
     renderDragPreview(items) {
       return (
-        <div className="flex opacity-100">
-          {items.map((item) => (
-            <Task key={item.id} task={JSON.parse(item.toString())} />
-          ))}
+        <div className="drag-preview">
+          <div className="flex items-center m-1 py-2 px-2 gap-2 bg-grey text-dark-grey rounded-md outline-1 outline-dark-grey">
+            <span>Dragging Task </span>
+            <span className="badge bg-light px-1 text-dark-grey rounded-sm">
+              {items.length}
+            </span>
+          </div>
         </div>
       );
     },
@@ -98,7 +101,7 @@ function TaskList({ items, order, category }: TaskListProps) {
       <div className="mb-5">
         <GridList
           aria-label={`${category} tasks`}
-          selectionMode="multiple"
+          selectionMode="single"
           items={list.items}
           renderEmptyState={() => <p>No tasks ...</p>}
           dragAndDropHooks={dragAndDropHooks}

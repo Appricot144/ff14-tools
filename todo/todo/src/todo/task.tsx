@@ -21,7 +21,7 @@ function Task({ task }: TaskProps) {
       id={id}
       value={task}
       textValue={task.name}
-      className="flex rounded-2xl w-full mb-1  selected:border-primary selected:bg-primary/10 selected:border-1 selected:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+      className="flex rounded-xl w-full mb-1 selected:border-primary selected:bg-primary/10 selected:border-1 selected:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
     >
       <Button slot="drag" className="drag"></Button>
       <div className="flex bg-grey border-1 border-grey rounded-xl min-w-96 max-w-full px-3 py-2 gap-2 hover:bg-grey hover:border-1 hover:border-dark-grey hover:shadow-sm">
