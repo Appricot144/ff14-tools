@@ -2,6 +2,7 @@ import { useEffect, useReducer, useState } from "react";
 import type { Category, TaskData } from "./data/taskData";
 import { TaskList } from "./taskList";
 import { taskReducer } from "./taskReducer";
+import { format, isBefore } from "date-fns";
 
 // dummy data
 const tasklist: TaskData[] = [
@@ -10,7 +11,7 @@ const tasklist: TaskData[] = [
     checked: true,
     name: "Task 1 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
     rewards: "Rewards 1",
-    limit: new Date(2026, 3, 9),
+    limit: new Date(2026, 3, 9, 0, 0),
     category: "Daily",
   },
   {
@@ -18,7 +19,7 @@ const tasklist: TaskData[] = [
     checked: true,
     name: "Task 2",
     rewards: "Rewards 2",
-    limit: new Date(1990, 1, 1),
+    limit: new Date(1990, 1, 1, 0, 0),
     category: "Daily",
   },
   {
@@ -53,21 +54,21 @@ function TodoPage() {
   let [tasks, dispatch] = useReducer(taskReducer, tasklist);
 
   function checkTaskDeadline() {
-    const now = new Date();
     const updatedTasks = tasks.map((task) => {
-      if (task.limit && task.limit <= now) {
-        return { ...task, checked: false };
+      if (task.limit) {
+        return { ...task, checked: task.limit.getTime() <= Date.now() };
       }
       return task;
     });
     dispatch({ type: "UPDATE_TASKS", tasks: updatedTasks });
+    // FIXME: store tasks data
     console.log("1. updated check status >> ", tasks);
   }
 
   useEffect(() => {
     checkTaskDeadline();
     // check task check status every hour
-    const interval = setInterval(checkTaskDeadline, 60 * 60 * 1000);
+    const interval = setInterval(checkTaskDeadline, 10 * 1000);
     console.log("2. set interval !!");
     return () => clearInterval(interval);
   }, []);
@@ -79,13 +80,13 @@ function TodoPage() {
     <div className="bg-light rounded-2xl p-5">
       <TaskList
         items={dailyList}
-        order={initialTaskOrder.daily}
+        initialOrder={initialTaskOrder.daily}
         onChange={dispatch}
         category="Daily"
       />
       <TaskList
         items={weeklyList}
-        order={initialTaskOrder.weekly}
+        initialOrder={initialTaskOrder.weekly}
         onChange={dispatch}
         category="Weekly"
       />

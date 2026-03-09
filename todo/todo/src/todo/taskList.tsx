@@ -6,23 +6,28 @@ import {
 } from "react-aria-components";
 import { type TaskData } from "./data/taskData";
 import { Task } from "./task";
+import { useState } from "react";
 
 interface TaskListProps {
   items: TaskData[];
-  order: number[];
+  initialOrder: number[];
   category: string;
   onChange?: (action: any) => void;
 }
 
-function TaskList({ items, order, category, onChange }: TaskListProps) {
-  // Sort items based on order
-  const sortedItems = items.sort(
-    (a, b) => order.indexOf(a.id) - order.indexOf(b.id),
-  );
-
+function TaskList({ items, initialOrder, category, onChange }: TaskListProps) {
+  // sort initial order
   let list = useListData({
-    initialItems: sortedItems,
+    initialItems: items.sort(
+      (a, b) => initialOrder.indexOf(a.id) - initialOrder.indexOf(b.id),
+    ),
+    getKey: (item) => item.id,
   });
+
+  // FIXME: list に items の更新を伝搬する処理が書きたい
+  const handleUpdateList = (id: number, item: TaskData) => {
+    list.update(id, item);
+  };
 
   let { dragAndDropHooks } = useDragAndDrop({
     getItems(keys, items: TaskData[]) {

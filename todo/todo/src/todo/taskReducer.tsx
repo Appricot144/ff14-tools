@@ -16,8 +16,7 @@ function taskReducer(tasks: TaskData[], action: TaskAction) {
     case "CHECK_TASK": {
       const target = tasks.find((t) => t.id === action.id)!;
       target.checked = !target.checked;
-      const other = tasks.filter((t) => t.id !== action.id)!;
-      return [target, ...other];
+      return [...tasks];
     }
     case "UNCHECK_TASK": {
       const target = tasks.find((t) => t.id === action.id)!;
@@ -65,7 +64,8 @@ function taskReducer(tasks: TaskData[], action: TaskAction) {
       return tasks.filter((t) => t.id !== action.id);
     }
     case "UPDATE_TASKS": {
-      return action.tasks || tasks;
+      const copyList = action.tasks || tasks;
+      return [...copyList];
     }
     default:
       throw new Error("unhandled action type:" + action.type);

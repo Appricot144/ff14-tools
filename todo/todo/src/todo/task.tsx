@@ -19,8 +19,9 @@ interface TaskProps {
 function Task({ task, onChangeTask }: TaskProps) {
   const { id, name, rewards, checked } = task || deafultData;
 
-  const handleCheck = (id: number) =>
+  const handleCheck = (id: number) => {
     onChangeTask?.({ type: "CHECK_TASK", id });
+  };
 
   // TODO: impl: edit mordal
   const handleEditName = (id: number, newName: string) =>
