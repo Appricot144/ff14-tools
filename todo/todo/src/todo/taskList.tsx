@@ -11,9 +11,10 @@ interface TaskListProps {
   items: TaskData[];
   order: number[];
   category: string;
+  onChange?: (action: any) => void;
 }
 
-function TaskList({ items, order, category }: TaskListProps) {
+function TaskList({ items, order, category, onChange }: TaskListProps) {
   // Sort items based on order
   const sortedItems = items.sort(
     (a, b) => order.indexOf(a.id) - order.indexOf(b.id),
@@ -41,7 +42,7 @@ function TaskList({ items, order, category }: TaskListProps) {
         list.moveAfter(e.target.key, e.keys);
       }
     },
-    onDragEnd(e) {
+    onDragEnd() {
       // FIXME: store new order to state
       console.log(
         "new order:",
@@ -110,7 +111,7 @@ function TaskList({ items, order, category }: TaskListProps) {
           renderEmptyState={() => <p>No tasks ...</p>}
           dragAndDropHooks={dragAndDropHooks}
         >
-          {(item) => <Task task={item} />}
+          {(item) => <Task task={item} onChangeTask={onChange} />}
         </GridList>
       </div>
     </>
