@@ -2,6 +2,8 @@ import { useListData } from "react-aria-components";
 import type { TaskData } from "./data/taskData";
 import { useState } from "react";
 
+// TODO: store task list if edit task
+
 function useTaskManager(initialTasks: TaskData[], initialOrder: number[]) {
   // react-aria data
   let listData = useListData<TaskData>({

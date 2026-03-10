@@ -1,9 +1,7 @@
-import { useEffect } from "react";
-import type { Category, TaskData } from "./data/taskData";
-import { TaskBoard, TaskList } from "./taskBoard";
+import type { TaskData } from "./data/taskData";
+import { TaskBoard } from "./taskBoard";
 import { TaskManagerContext } from "./taskManagerContext";
 import { useTaskManager } from "./taskManager";
-import { addDays, addWeeks, isBefore, nextDay } from "date-fns";
 
 // dummy data
 const tasklist: TaskData[] = [
@@ -20,7 +18,7 @@ const tasklist: TaskData[] = [
     checked: true,
     name: "Limited Task 2",
     rewards: "Rewards 2",
-    limit: new Date(1990, 1, 1, 0, 0),
+    limit: new Date(1990, 0, 1, 0, 0),
     category: "Daily",
   },
   {
@@ -28,6 +26,7 @@ const tasklist: TaskData[] = [
     checked: true,
     name: "Task 3",
     rewards: "Rewards 3",
+    limit: new Date(1999, 0, 10, 5, 0),
     category: "Weekly",
   },
   {

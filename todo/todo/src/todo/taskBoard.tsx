@@ -4,15 +4,14 @@ import { Task } from "./task";
 import { useContext, useEffect } from "react";
 import { TaskManagerContext } from "./taskManagerContext";
 import { TaskHeader } from "./taskHeader";
-import { addDays, addWeeks, isBefore } from "date-fns";
+import { addWeeks, differenceInWeeks, endOfToday, isBefore } from "date-fns";
 
 function updateLimit(limit: Date, category: Category) {
   switch (category) {
     case "Daily":
-      return addDays(new Date(), 1);
+      return endOfToday();
     case "Weekly":
-      // FIXME: 今日を基準に来週の同曜日同時間に期限を設定
-      return addWeeks(limit, 1);
+      return addWeeks(limit, differenceInWeeks(new Date(), limit) + 1);
     default:
       return undefined;
   }
@@ -21,7 +20,7 @@ function updateLimit(limit: Date, category: Category) {
 function TaskBoard() {
   const { taskList, handlers } = useContext(TaskManagerContext)!;
 
-  const checkTaskDeadline = () => {
+  const checkTaskDeadline = (taskList: TaskData[]) => {
     const updatedTasks = taskList.map((task) => {
       if (task.limit) {
         const isTimeUp = isBefore(task.limit, new Date());
@@ -36,14 +35,13 @@ function TaskBoard() {
       return task;
     });
     handlers.updateTasks(updatedTasks);
-    // FIXME: store tasks data
   };
 
   useEffect(() => {
     // check task check status every hour
-    const interval = setInterval(checkTaskDeadline, 10 * 1000);
+    const interval = setInterval(checkTaskDeadline, 3 * 1000, taskList);
     return () => clearInterval(interval);
-  }, []);
+  }, [taskList]);
 
   return (
     <>

@@ -50,10 +50,10 @@ function Task({ task }: TaskProps) {
               <DotsThreeIcon size={20} />
             </button>
           </div>
-          <div className="flex flex-row text-dark-grey px-2 pt-1">
+          <div className="flex flex-row justify-between text-dark-grey px-2 pt-1">
             {rewards}
+            <div>{limit ? format(limit, "M/dd H:mm") : ""}</div>
           </div>
-          <div>{limit ? format(limit, "yyyy-MM-dd hh:mm:ss") : ""}</div>
         </div>
       </div>
     </GridListItem>
