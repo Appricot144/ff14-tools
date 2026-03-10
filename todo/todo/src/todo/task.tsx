@@ -1,7 +1,9 @@
+import { useContext } from "react";
 import { DotsThreeIcon, CheckIcon } from "@phosphor-icons/react";
 import { Button, GridListItem } from "react-aria-components";
-import type { Category, TaskData } from "./data/taskData";
-import type { TaskAction } from "./taskReducer";
+import type { TaskData } from "./data/taskData";
+import { TaskManagerContext } from "./taskManagerContext";
+import { format } from "date-fns";
 
 // dummy data
 const deafultData = {
@@ -13,34 +15,12 @@ const deafultData = {
 
 interface TaskProps {
   task: TaskData;
-  onChangeTask?: (action: TaskAction) => void;
 }
 
-function Task({ task, onChangeTask }: TaskProps) {
-  const { id, name, rewards, checked } = task || deafultData;
-
-  const handleCheck = (id: number) => {
-    onChangeTask?.({ type: "CHECK_TASK", id });
-  };
-
-  // TODO: impl: edit mordal
-  const handleEditName = (id: number, newName: string) =>
-    onChangeTask?.({ type: "EDIT_TASK_NAME", id, name: newName });
-
-  const handleEditRewards = (id: number, newRewards: string) =>
-    onChangeTask?.({ type: "EDIT_TASK_REWARD", id, rewards: newRewards });
-
-  const handleEditCategory = (id: number, newCategory: Category) =>
-    onChangeTask?.({ type: "EDIT_TASK_CATEGORY", id, category: newCategory });
-
-  const handleEditLimit = (id: number, newLimit: Date) =>
-    onChangeTask?.({ type: "EDIT_TASK_LIMIT", id, limit: newLimit });
-
-  const handleAddTask = (task: TaskData) =>
-    onChangeTask?.({ type: "ADD_TASK", ...task });
-
-  const handleDeleteTask = (id: number) =>
-    onChangeTask?.({ type: "DELETE_TASK", id });
+function Task({ task }: TaskProps) {
+  const { id, name, rewards, checked, limit } = task || deafultData;
+  const { handlers } = useContext(TaskManagerContext)!;
+  const { checkTask } = handlers;
 
   return (
     <GridListItem
@@ -53,7 +33,7 @@ function Task({ task, onChangeTask }: TaskProps) {
       <div className="flex bg-grey border-1 border-grey rounded-xl min-w-96 max-w-full px-3 py-2 gap-1 hover:bg-grey hover:border-1 hover:border-dark-grey hover:shadow-sm">
         <div className="pt-1.5">
           <button
-            onClick={() => handleCheck(id)}
+            onClick={() => checkTask(id)}
             data-ui={checked ? "checked" : ""}
             className="flex justify-center items-center w-7 h-7 rounded-full bg-light border-1 border-dark-grey focus:ring-2 focus:ring-light data-[ui=checked]:bg-success data-[ui=checked]:border-success"
           >
@@ -73,6 +53,7 @@ function Task({ task, onChangeTask }: TaskProps) {
           <div className="flex flex-row text-dark-grey px-2 pt-1">
             {rewards}
           </div>
+          <div>{limit ? format(limit, "yyyy-MM-dd hh:mm:ss") : ""}</div>
         </div>
       </div>
     </GridListItem>
