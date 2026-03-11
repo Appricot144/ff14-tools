@@ -56,7 +56,11 @@ function useTaskManager(initialTasks: TaskData[], initialOrder: number[]) {
     setTaskList([...newTaskList]);
   };
 
-  return { listData, taskList, handlers: { checkTask, updateTasks } };
+  return {
+    listData,
+    taskList,
+    handlers: { checkTask, updateTasks, editTask, addTask, deleteTask },
+  };
 }
 
 // TODO: impl: task id generator (for now, using random id in ADD_TASK action)
