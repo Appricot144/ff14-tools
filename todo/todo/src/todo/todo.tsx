@@ -6,7 +6,7 @@ import { useTaskManager } from "./taskManager";
 // dummy data
 const tasklist: TaskData[] = [
   {
-    id: 1,
+    id: "1",
     checked: true,
     name: "Limited Task 1",
     rewards: "Rewards 1",
@@ -14,7 +14,7 @@ const tasklist: TaskData[] = [
     category: "Daily",
   },
   {
-    id: 2,
+    id: "2",
     checked: true,
     name: "Limited Task 2",
     rewards: "Rewards 2",
@@ -22,7 +22,7 @@ const tasklist: TaskData[] = [
     category: "Daily",
   },
   {
-    id: 3,
+    id: "3",
     checked: true,
     name: "Task 3",
     rewards: "Rewards 3",
@@ -30,14 +30,14 @@ const tasklist: TaskData[] = [
     category: "Weekly",
   },
   {
-    id: 4,
+    id: "4",
     checked: false,
     name: "Task 4",
     rewards: "Rewards 4",
     category: "Daily",
   },
   {
-    id: 100,
+    id: "100",
     checked: false,
     name: "inserted Task",
     rewards: "Special Rewards",
@@ -45,7 +45,7 @@ const tasklist: TaskData[] = [
   },
 ];
 
-const initialTaskOrder = [1, 100, 2, 4, 3];
+const initialTaskOrder = ["1", "100", "2", "4", "3"];
 
 function TodoPage() {
   const taskManager = useTaskManager(tasklist, initialTaskOrder);

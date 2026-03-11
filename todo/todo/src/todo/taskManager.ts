@@ -4,7 +4,7 @@ import { useState } from "react";
 
 // TODO: store task list if edit task
 
-function useTaskManager(initialTasks: TaskData[], initialOrder: number[]) {
+function useTaskManager(initialTasks: TaskData[], initialOrder: string[]) {
   // react-aria data
   let listData = useListData<TaskData>({
     // sort initial order
@@ -18,7 +18,7 @@ function useTaskManager(initialTasks: TaskData[], initialOrder: number[]) {
   const [taskList, setTaskList] = useState<TaskData[]>(initialTasks);
 
   // ---handlers---------
-  const checkTask = (id: number) => {
+  const checkTask = (id: string) => {
     const item = listData.getItem(id)!;
     listData.update(id, { ...item, checked: !item.checked });
     const target = taskList.find((t) => t.id === id)!;
@@ -32,18 +32,18 @@ function useTaskManager(initialTasks: TaskData[], initialOrder: number[]) {
    * @param id
    * @param updatedTask
    */
-  const editTask = (id: number, updatedTask: TaskData) => {
+  const editTask = (id: string, updatedTask: TaskData) => {
     listData.update(id, { ...updatedTask });
     const otherTasks = taskList.filter((t) => t.id !== id);
     setTaskList([...otherTasks, updatedTask]);
   };
 
-  const addTask = (insertAfter: number, newTask: TaskData) => {
-    listData.insertAfter(insertAfter, newTask);
+  const addTask = (insertAfterId: string, newTask: TaskData) => {
+    listData.insertAfter(insertAfterId, newTask);
     setTaskList([...taskList, newTask]);
   };
 
-  const deleteTask = (id: number) => {
+  const deleteTask = (id: string) => {
     listData.remove(id);
     setTaskList([...taskList.filter((t) => t.id !== id)]);
   };
