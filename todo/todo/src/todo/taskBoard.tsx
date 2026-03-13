@@ -1,47 +1,27 @@
 import { DropIndicator, GridList, useDragAndDrop } from "react-aria-components";
 import { type Category, type TaskData } from "./data/taskData";
-import { Task } from "./task";
-import { useContext, useEffect } from "react";
+import { Task } from "./task/task";
+import { useContext, useEffect, useRef } from "react";
 import { TaskManagerContext } from "./taskManagerContext";
 import { TaskHeader } from "./taskHeader";
-import { addWeeks, differenceInWeeks, endOfToday, isBefore } from "date-fns";
-
-function updateLimit(limit: Date, category: Category) {
-  switch (category) {
-    case "Daily":
-      return endOfToday();
-    case "Weekly":
-      return addWeeks(limit, differenceInWeeks(new Date(), limit) + 1);
-    default:
-      return undefined;
-  }
-}
+import { checkTaskDeadline } from "./util/taskUpdator";
 
 function TaskBoard() {
   const { taskList, handlers } = useContext(TaskManagerContext)!;
-
-  const checkTaskDeadline = (taskList: TaskData[]) => {
-    const updatedTasks = taskList.map((task) => {
-      if (task.limit) {
-        const isTimeUp = isBefore(task.limit, new Date());
-        if (isTimeUp) {
-          return {
-            ...task,
-            checked: false,
-            limit: updateLimit(task.limit, task.category),
-          };
-        }
-      }
-      return task;
-    });
-    handlers.updateTasks(updatedTasks);
-  };
+  const taskListRef = useRef<TaskData[]>(taskList);
 
   useEffect(() => {
-    // check task check status every hour
-    const interval = setInterval(checkTaskDeadline, 3 * 1000, taskList);
-    return () => clearInterval(interval);
+    taskListRef.current = taskList;
   }, [taskList]);
+
+  useEffect(() => {
+    // check task check status every hour (here every 3s for demo)
+    const interval = setInterval(() => {
+      checkTaskDeadline(taskListRef.current, handlers.updateTasks);
+    }, 5 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>

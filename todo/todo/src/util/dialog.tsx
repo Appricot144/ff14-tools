@@ -24,9 +24,14 @@ function Dialog({ isOpen, onClose, children }: Props) {
     }
   }, [isOpen]);
 
-  const handleClickBackDrop = useCallback(() => {
-    onClose?.();
-  }, [onClose]);
+  const handleClickBackDrop = useCallback(
+    (event: React.MouseEvent<HTMLDialogElement>) => {
+      event.stopPropagation();
+      event.preventDefault();
+      onClose?.();
+    },
+    [onClose],
+  );
 
   const handleClickContent = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -35,12 +40,26 @@ function Dialog({ isOpen, onClose, children }: Props) {
     [],
   );
 
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDialogElement>) => {
+      const k = event.key;
+      if (k === "Escape" || k.startsWith("Arrow")) {
+        console.log("pressed >", k);
+        event.stopPropagation();
+      }
+    },
+    [],
+  );
+
   return (
     <RemoveScroll removeScrollBar enabled={isOpen}>
       <dialog
         ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
         className="bg-transparent m-auto focus:ouline-none"
         onClick={handleClickBackDrop}
+        onKeyDown={handleKeyDown}
       >
         <div onClick={handleClickContent}>{children}</div>
       </dialog>

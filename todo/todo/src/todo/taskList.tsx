@@ -1,4 +1,4 @@
-import { Task } from "./task";
+import { Task } from "./task/task";
 import { type TaskData, type Category } from "./data/taskData";
 import {
   DropIndicator,

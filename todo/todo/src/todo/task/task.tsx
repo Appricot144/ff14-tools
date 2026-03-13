@@ -1,11 +1,12 @@
-import { Dialog } from "../util/dialog";
+import { Dialog } from "../../util/dialog";
 import { useState, useContext } from "react";
 import { DotsThreeIcon, CheckIcon } from "@phosphor-icons/react";
 import { Button, GridListItem } from "react-aria-components";
-import { TaskData } from "./data/taskData";
-import { TaskManagerContext } from "./taskManagerContext";
+import { TaskData } from "../data/taskData";
+import { TaskManagerContext } from "../taskManagerContext";
 import { format } from "date-fns";
 import { TaskEditPanel } from "./taskEditPanel";
+import { useEditPanel } from "./editPanelHooks";
 
 interface TaskProps {
   task: TaskData;
@@ -13,10 +14,11 @@ interface TaskProps {
 
 function Task({ task }: TaskProps) {
   const { id, name, rewards, checked, limit } = task || new TaskData("Daily");
-  const { handlers } = useContext(TaskManagerContext)!;
-  const { checkTask } = handlers;
+  const { handlers: taskHandlers } = useContext(TaskManagerContext)!;
+  const { checkTask } = taskHandlers;
 
   const [isOpen, setIsOpen] = useState(false);
+  const { edit, handlers: editHandlers } = useEditPanel(task);
 
   return (
     <>
@@ -53,8 +55,19 @@ function Task({ task }: TaskProps) {
             </div>
           </div>
         </div>
-        <Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          <TaskEditPanel tasks={[task]} />
+        <Dialog
+          isOpen={isOpen}
+          onClose={() => {
+            editHandlers.resetData();
+            setIsOpen(false);
+          }}
+        >
+          <TaskEditPanel
+            current={task}
+            edit={edit}
+            handlers={editHandlers}
+            onClose={() => setIsOpen(false)}
+          />
         </Dialog>
       </GridListItem>
     </>

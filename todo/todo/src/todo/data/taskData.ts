@@ -1,3 +1,5 @@
+import { add, addWeeks, endOfToday } from "date-fns";
+
 type Category =
   | "Daily"
   | "Weekly"
@@ -16,17 +18,30 @@ class TaskData {
   note?: string;
 
   constructor(category: Category) {
-    this.id = crypto.randomUUID();
+    this.id = TaskData.newId();
     this.checked = false;
     this.name = "";
     this.rewards = "";
     this.category = category;
-    this.limit = new Date();
+    this.limit = TaskData.setInitialLimit(category);
     this.note = "";
   }
 
   static newId() {
     return crypto.randomUUID();
+  }
+
+  static setInitialLimit(category: Category) {
+    switch (category) {
+      case "Daily":
+        return endOfToday();
+      case "Weekly":
+        return addWeeks(new Date(), 1);
+      case "Monthly":
+        return add(new Date(), { months: 1 });
+      default:
+        return new Date();
+    }
   }
 }
 

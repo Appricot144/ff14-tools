@@ -63,6 +63,4 @@ function useTaskManager(initialTasks: TaskData[], initialOrder: string[]) {
   };
 }
 
-// TODO: impl: task id generator (for now, using random id in ADD_TASK action)
-
 export { useTaskManager };

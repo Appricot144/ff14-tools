@@ -2,6 +2,7 @@ import type { TaskData } from "./data/taskData";
 import { TaskBoard } from "./taskBoard";
 import { TaskManagerContext } from "./taskManagerContext";
 import { useTaskManager } from "./taskManager";
+import { checkTaskDeadline } from "./util/taskUpdator";
 
 // dummy data
 const tasklist: TaskData[] = [
@@ -10,7 +11,7 @@ const tasklist: TaskData[] = [
     checked: true,
     name: "Limited Task 1",
     rewards: "Rewards 1",
-    limit: new Date(2026, 2, 10, 0, 0),
+    limit: new Date(2026, 2, 10, 0, 0, 0),
     category: "Daily",
   },
   {
@@ -18,7 +19,7 @@ const tasklist: TaskData[] = [
     checked: true,
     name: "Limited Task 2",
     rewards: "Rewards 2",
-    limit: new Date(1990, 0, 1, 0, 0),
+    limit: new Date(1990, 0, 1, 0, 0, 0),
     category: "Daily",
   },
   {
@@ -26,7 +27,7 @@ const tasklist: TaskData[] = [
     checked: true,
     name: "Task 3",
     rewards: "Rewards 3",
-    limit: new Date(1999, 0, 10, 5, 0),
+    limit: new Date(1999, 0, 10, 5, 0, 0),
     category: "Weekly",
   },
   {
@@ -48,8 +49,8 @@ const tasklist: TaskData[] = [
 const initialTaskOrder = ["1", "100", "2", "4", "3"];
 
 function TodoPage() {
-  const taskManager = useTaskManager(tasklist, initialTaskOrder);
-
+  const tasks = checkTaskDeadline(tasklist, (tasklist) => tasklist);
+  const taskManager = useTaskManager([...tasks!], initialTaskOrder);
   return (
     <div className="bg-light rounded-2xl p-5">
       <TaskManagerContext value={taskManager}>
