@@ -8,6 +8,9 @@ type Category =
   | "One-time"
   | "Other";
 
+/**
+ * DO NOT implement not static methods
+ */
 class TaskData {
   readonly id: string;
   checked: boolean;
@@ -16,6 +19,8 @@ class TaskData {
   category: Category;
   limit?: Date;
   note?: string;
+  parent?: string;
+  children?: string[];
 
   constructor(category: Category) {
     this.id = TaskData.newId();
@@ -25,6 +30,8 @@ class TaskData {
     this.category = category;
     this.limit = TaskData.setInitialLimit(category);
     this.note = "";
+    this.parent = undefined;
+    this.children = [];
   }
 
   static newId() {
@@ -45,4 +52,8 @@ class TaskData {
   }
 }
 
-export { type Category, TaskData };
+function isChild(task: TaskData): boolean {
+  return task.parent !== undefined && task.parent !== "";
+}
+
+export { type Category, TaskData, isChild };

@@ -1,12 +1,13 @@
 import { Dialog } from "../../util/dialog";
 import { useState, useContext } from "react";
-import { DotsThreeIcon, CheckIcon } from "@phosphor-icons/react";
+import { DotsThreeIcon } from "@phosphor-icons/react";
 import { Button, GridListItem } from "react-aria-components";
-import { TaskData } from "../data/taskData";
+import { isChild, TaskData } from "../data/taskData";
 import { TaskManagerContext } from "../taskManagerContext";
 import { format } from "date-fns";
 import { TaskEditPanel } from "./taskEditPanel";
 import { useEditPanel } from "./editPanelHooks";
+import { CheckCircle } from "../util/ui/CheckCircle";
 
 interface TaskProps {
   task: TaskData;
@@ -14,11 +15,31 @@ interface TaskProps {
 
 function Task({ task }: TaskProps) {
   const { id, name, rewards, checked, limit } = task || new TaskData("Daily");
-  const { handlers: taskHandlers } = useContext(TaskManagerContext)!;
-  const { checkTask } = taskHandlers;
+  const { taskList, handlers: taskHandlers } = useContext(TaskManagerContext)!;
+  const { checkTask, updateTasks } = taskHandlers;
 
   const [isOpen, setIsOpen] = useState(false);
   const { edit, handlers: editHandlers } = useEditPanel(task);
+
+  const children = taskList.filter((t) => t.parent === task.id);
+
+  if (isChild(task)) {
+    return null;
+  }
+
+  const handleParentTaskCheck = (id: string) => {
+    if (!task.children || !task.children.length) {
+      checkTask(id);
+      return;
+    }
+
+    const value = !task.checked;
+    const updatedTasks = children.map((t) => {
+      return { ...t, checked: value };
+    });
+    updateTasks([{ ...task, checked: value }, ...updatedTasks]);
+    return;
+  };
 
   return (
     <>
@@ -30,28 +51,38 @@ function Task({ task }: TaskProps) {
       >
         <Button slot="drag" className="drag"></Button>
         <div className="flex bg-grey border-1 border-grey rounded-xl min-w-96 max-w-full px-3 py-2 gap-1 hover:bg-grey hover:border-1 hover:border-dark-grey hover:shadow-sm">
-          <div className="pt-1.5">
-            <button
-              onClick={() => checkTask(id)}
-              data-ui={checked ? "checked" : ""}
-              className="flex justify-center items-center w-7 h-7 rounded-full bg-light border-1 border-dark-grey focus:ring-2 focus:ring-light data-[ui=checked]:bg-success data-[ui=checked]:border-success"
-            >
-              <CheckIcon className="text-light" weight="bold" size={17} />
-            </button>
+          <div className="pt-1">
+            <CheckCircle
+              onCheck={() => handleParentTaskCheck(id)}
+              taskId={id}
+              checked={checked}
+              size={15}
+            />
           </div>
           <div className="flex flex-col flex-auto max-w-full">
-            <div className="flex flex-row border-b-1 border-dark-grey gap-2 items-start justify-between min-w-full max-w-full pb-1">
-              <div className="text-dark max-w-fit px-2 py-1">{name}</div>
-              <button
-                onClick={() => setIsOpen(true)}
-                className="text-dark-grey px-1 rounded-md hover:shadow-sm"
-              >
-                <DotsThreeIcon size={20} />
-              </button>
+            <div className="flex flex-col border-b-1 border-dark-grey">
+              <div className="flex flex-row gap-2 items-center justify-between min-w-full max-w-full pb-1">
+                <div className="text-dark max-w-fit px-2 py-1">{name}</div>
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="text-dark-grey px-1 rounded-md hover:shadow-sm"
+                >
+                  <DotsThreeIcon size={15} />
+                </button>
+              </div>
+              {children.length !== 0 ? (
+                <div className="flex flex-col pb-1">
+                  {children.map((child) => (
+                    <ChildTask key={child.id} task={child} />
+                  ))}
+                </div>
+              ) : null}
             </div>
-            <div className="flex flex-row justify-between text-dark-grey px-2 pt-1">
+            <div className="flex flex-row items-center justify-between text-dark-grey text-sm p-1">
               {rewards}
-              <div>{limit ? format(limit, "M/dd H:mm") : ""}</div>
+              <div className="text-sm">
+                {limit ? format(limit, "M/dd H:mm") : ""}
+              </div>
             </div>
           </div>
         </div>
@@ -74,4 +105,21 @@ function Task({ task }: TaskProps) {
   );
 }
 
+function ChildTask({ task }: TaskProps) {
+  const { handlers: taskHandlers } = useContext(TaskManagerContext)!;
+  const { checkTask } = taskHandlers;
+
+  return (
+    <div className="flex flex-row items-center gap-1 items-center min-w-full max-w-full">
+      <CheckCircle
+        className=""
+        onCheck={checkTask}
+        taskId={task.id}
+        checked={task.checked}
+        size={15}
+      />
+      <div className="text-dark max-w-fit px-2 py-1">{task.name}</div>
+    </div>
+  );
+}
 export { Task };

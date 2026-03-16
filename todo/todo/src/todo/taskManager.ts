@@ -1,5 +1,5 @@
 import { useListData } from "react-aria-components";
-import type { TaskData } from "./data/taskData";
+import { TaskData } from "./data/taskData";
 import { useState } from "react";
 
 // TODO: store task list if edit task
@@ -51,9 +51,15 @@ function useTaskManager(initialTasks: TaskData[], initialOrder: string[]) {
   const updateTasks = (newTaskList: TaskData[]) => {
     const itemsRef = [...listData.items];
     itemsRef.forEach((item) => {
-      listData.update(item.id, newTaskList.find((t) => t.id === item.id)!);
+      listData.update(
+        item.id,
+        newTaskList.find((t) => t.id === item.id) ?? item,
+      );
     });
-    setTaskList([...newTaskList]);
+    const newList = taskList.map(
+      (task) => newTaskList.find((t) => t.id === task.id) ?? task,
+    );
+    setTaskList([...newList]);
   };
 
   return {

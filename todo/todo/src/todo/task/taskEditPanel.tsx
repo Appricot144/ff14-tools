@@ -15,7 +15,8 @@ interface TaskEditProps {
 }
 
 function TaskEditPanel({ current, edit, handlers, onClose }: TaskEditProps) {
-  const { handlers: taskManagerHandlers } = useContext(TaskManagerContext)!;
+  const { taskList, handlers: taskManagerHandlers } =
+    useContext(TaskManagerContext)!;
 
   const { id, name, rewards, category, limit, note } = edit!;
 
