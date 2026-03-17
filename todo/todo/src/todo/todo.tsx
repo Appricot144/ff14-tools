@@ -9,7 +9,7 @@ const tasklist: TaskData[] = [
   {
     id: "1",
     checked: true,
-    name: "Task 1",
+    name: "------------------------------------- long task name ---------------------------------------",
     rewards: "Rewards 1",
     limit: new Date(2026, 2, 10, 0, 0, 0),
     category: "Daily",

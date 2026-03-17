@@ -1,18 +1,17 @@
 import { useContext } from "react";
-import { TaskData, type Category } from "./data/taskData";
+import { isLeaf, TaskData, type Category } from "./data/taskData";
 import { PlusIcon } from "@phosphor-icons/react";
 import { TaskManagerContext } from "./taskManagerContext";
 
 interface HeaderProps {
-  tasks: TaskData[];
   category: Category;
 }
 
-function TaskHeader({ tasks, category }: HeaderProps) {
-  const { listData, handlers } = useContext(TaskManagerContext)!;
-  const items = tasks
+function TaskHeader({ category }: HeaderProps) {
+  const { listData, taskList, handlers } = useContext(TaskManagerContext)!;
+  const items = taskList
     .filter((t) => t.category === category)
-    .filter((t) => !t.children);
+    .filter((t) => isLeaf(t));
 
   const lastIdByCategory = (cate: Category) => {
     const last = listData.items.filter((i) => i.category === cate).at(-1);

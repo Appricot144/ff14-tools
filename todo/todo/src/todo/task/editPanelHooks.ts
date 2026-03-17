@@ -1,7 +1,8 @@
 import { useReducer } from "react";
 import type { TaskData } from "../data/taskData";
+import { useSubTasks } from "./subTaskHooks";
 
-type FieldType = string | Date | boolean;
+type FieldType = TaskData[keyof TaskData];
 
 interface Action {
   type: string;
@@ -11,8 +12,17 @@ interface Action {
   };
 }
 
-function useEditPanel(currentData: TaskData) {
-  const [edit, dispatch] = useReducer(formReducer, currentData);
+function useEditPanel(
+  currentParentTask: TaskData,
+  currentTaskList: TaskData[],
+) {
+  const [edit, dispatch] = useReducer(formReducer, currentParentTask);
+
+  const currentChildren = edit.children
+    ? currentTaskList.filter((t) => t.parent === edit.id)
+    : [];
+  const { subTaskList, handlers: subTaskHandlers } =
+    useSubTasks(currentChildren);
 
   const actions = {
     setField: (field: keyof TaskData, value: FieldType) => ({
@@ -36,13 +46,17 @@ function useEditPanel(currentData: TaskData) {
         if (!action.payload) return { ...task };
         return { ...task, [action.payload.field]: action.payload.value };
       case "RESET":
-        return currentData;
+        return currentParentTask;
       default:
         throw new Error("invalid action type");
     }
   }
 
-  return { edit, handlers: { editData, resetData } };
+  return {
+    edit,
+    subTaskList,
+    handlers: { editData, resetData, ...subTaskHandlers },
+  };
 }
 
 export { useEditPanel };

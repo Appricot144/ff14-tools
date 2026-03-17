@@ -56,4 +56,10 @@ function isChild(task: TaskData): boolean {
   return task.parent !== undefined && task.parent !== "";
 }
 
-export { type Category, TaskData, isChild };
+function isLeaf(task: TaskData): boolean {
+  if (!task.children) return true;
+
+  return task.children!.length === 0;
+}
+
+export { type Category, TaskData, isChild, isLeaf };

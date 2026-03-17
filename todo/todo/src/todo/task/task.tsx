@@ -19,7 +19,11 @@ function Task({ task }: TaskProps) {
   const { checkTask, updateTasks } = taskHandlers;
 
   const [isOpen, setIsOpen] = useState(false);
-  const { edit, handlers: editHandlers } = useEditPanel(task);
+  const {
+    edit,
+    subTaskList,
+    handlers: editHandlers,
+  } = useEditPanel(task, taskList);
 
   const children = taskList.filter((t) => t.parent === task.id);
 
@@ -46,7 +50,7 @@ function Task({ task }: TaskProps) {
       <GridListItem
         id={id}
         value={task}
-        textValue={task.name}
+        textValue={task.name ?? "no name task"}
         className="flex rounded-xl w-full mb-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
       >
         <Button slot="drag" className="drag"></Button>
@@ -62,7 +66,11 @@ function Task({ task }: TaskProps) {
           <div className="flex flex-col flex-auto max-w-full">
             <div className="flex flex-col border-b-1 border-dark-grey">
               <div className="flex flex-row gap-2 items-center justify-between min-w-full max-w-full pb-1">
-                <div className="text-dark max-w-fit px-2 py-1">{name}</div>
+                <div
+                  className={`${name === "" ? "text-dark-grey" : "text-dark"} max-w-fit px-2 py-1`}
+                >
+                  {name === "" ? "no name task" : name}
+                </div>
                 <button
                   onClick={() => setIsOpen(true)}
                   className="text-dark-grey px-1 rounded-md hover:shadow-sm"
@@ -89,6 +97,7 @@ function Task({ task }: TaskProps) {
         <Dialog
           isOpen={isOpen}
           onClose={() => {
+            editHandlers.resetSubTask();
             editHandlers.resetData();
             setIsOpen(false);
           }}
@@ -96,6 +105,7 @@ function Task({ task }: TaskProps) {
           <TaskEditPanel
             current={task}
             edit={edit}
+            subTaskList={subTaskList}
             handlers={editHandlers}
             onClose={() => setIsOpen(false)}
           />
@@ -118,7 +128,11 @@ function ChildTask({ task }: TaskProps) {
         checked={task.checked}
         size={15}
       />
-      <div className="text-dark max-w-fit px-2 py-1">{task.name}</div>
+      <div
+        className={`${task.name === "" ? "text-dark-grey" : "text-dark"} max-w-fit px-2 py-1`}
+      >
+        {task.name === "" ? "no name task" : task.name}
+      </div>
     </div>
   );
 }

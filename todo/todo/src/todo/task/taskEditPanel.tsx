@@ -1,24 +1,46 @@
 import { useEffect, useContext } from "react";
 import { format } from "date-fns";
 import { TaskData } from "../data/taskData";
-import { XIcon } from "@phosphor-icons/react";
+import { CheckIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
 import { TaskManagerContext } from "../taskManagerContext";
 import type { useEditPanel } from "./editPanelHooks";
 
-type EditHandlers = ReturnType<typeof useEditPanel>["handlers"];
+type EditHandlersType = ReturnType<typeof useEditPanel>["handlers"];
 
 interface TaskEditProps {
   current: TaskData;
   edit: TaskData;
-  handlers: EditHandlers;
+  subTaskList: TaskData[];
+  handlers: EditHandlersType;
   onClose?: () => void;
 }
 
-function TaskEditPanel({ current, edit, handlers, onClose }: TaskEditProps) {
-  const { taskList, handlers: taskManagerHandlers } =
-    useContext(TaskManagerContext)!;
+function TaskEditPanel({
+  current,
+  edit,
+  subTaskList,
+  handlers,
+  onClose,
+}: TaskEditProps) {
+  const { handlers: taskManagerHandlers } = useContext(TaskManagerContext)!;
 
   const { id, name, rewards, category, limit, note } = edit!;
+
+  const handleSaveClick = () => {
+    taskManagerHandlers.updateTasks([...subTaskList, edit]);
+    onClose?.();
+  };
+
+  const handleCancelClick = () => {
+    handlers.resetData();
+    handlers.resetSubTask();
+    onClose?.();
+  };
+
+  const handleAddSubTaskClick = () => {
+    const childrenIds = handlers.addEmptySubTask(id, category);
+    handlers.editData("children", childrenIds);
+  };
 
   const stopArrowPropagation = (
     e: React.KeyboardEvent<
@@ -35,14 +57,14 @@ function TaskEditPanel({ current, edit, handlers, onClose }: TaskEditProps) {
   }, [current]);
 
   return (
-    <div className="bg-grey text-lg text-dark font-sm rounded-2xl px-6 py-7 border-2 border-dark-grey">
+    <div className="bg-grey text-lg text-dark font-sm text-sm rounded-2xl px-6 py-7 border-2 border-dark-grey">
       <div className="flex">
-        <div className="mb-5 border-b-3 border-dark-grey grow">
+        <div className="mb-4 border-b-3 border-dark-grey grow pb-1">
           <input
             id="name"
             type="text"
             value={name ?? ""}
-            className="w-full pl-1 pr-3 py-2 text-3xl font-bold focus:outline-hidden"
+            className="w-full pl-1 pr-3 py-1 bg-light rounded-lg text-3xl font-bold focus:outline-hidden"
             placeholder="Task name ..."
             onChange={(e) => {
               handlers.editData("name", e.target.value);
@@ -51,18 +73,44 @@ function TaskEditPanel({ current, edit, handlers, onClose }: TaskEditProps) {
             onKeyDown={stopArrowPropagation}
           />
         </div>
-        <div className="relative -top-2 -right-2 shrink">
-          <button
-            type="button"
-            className="h-9 w-9 rounded-full bg-transparent hover:bg-dark-grey/20 hover:shadow-sm"
-            onClick={() => onClose?.()}
-          >
-            <XIcon size={17} className="m-auto" />
-          </button>
-        </div>
+        <button
+          type="button"
+          className="size-8 rounded-full bg-transparent hover:bg-dark-grey/20 hover:shadow-sm relative -top-3 -right-3 shrinkrelative -top-3 -right-3 shrink"
+          onClick={() => handleCancelClick()}
+        >
+          <XIcon size={17} className="m-auto" />
+        </button>
       </div>
-      <div className="grid grid-cols-4 gap-x-4 gap-y-2">
-        <div className="border-b-2 border-light font-medium">
+      <div className="grid grid-cols-4 gap-x-4 gap-y-2 mb-1">
+        <div className="col-span-1 pb-1 border-b-1 border-dark-grey/30 text-dark/80">
+          <label>Sub Tasks</label>
+        </div>
+        <div className="col-span-3 grid grid-cols gap-y-1">
+          <div className="">
+            <button
+              type="button"
+              className="w-full text-sm flex justify-center items-center gap-1 text-dark/70 rounded-lg border-1 border-dark-grey/20 bg-dark-grey/20 hover:bg-dark-grey/30"
+              onClick={() => handleAddSubTaskClick()}
+            >
+              <PlusIcon size={12} weight="bold" />
+              <span>add sub task</span>
+            </button>
+          </div>
+          {subTaskList.map((child) => (
+            <input
+              key={child.id}
+              type="text"
+              value={child.name ?? ""}
+              placeholder="Sub task name ..."
+              className="w-full py-1 px-2 rounded-md bg-light focus:outline-hidden focus:shadow-md"
+              onChange={(e) => {
+                handlers.changeSubTaskField(child.id, "name", e.target.value);
+              }}
+              onKeyDown={stopArrowPropagation}
+            />
+          ))}
+        </div>
+        <div className="border-b-1 border-dark-grey/30 text-dark/80">
           <label htmlFor="rewards">Rewards</label>
         </div>
         <div className="bg-light w-full col-span-3 rounded-md">
@@ -76,7 +124,7 @@ function TaskEditPanel({ current, edit, handlers, onClose }: TaskEditProps) {
             onKeyDown={stopArrowPropagation}
           />
         </div>
-        <div className="border-b-2 border-light font-medium">
+        <div className="border-b-1 border-dark-grey/30 text-dark/80">
           <label htmlFor="category">Category</label>
         </div>
         <div className="bg-light w-full col-span-3 rounded-md">
@@ -98,7 +146,7 @@ function TaskEditPanel({ current, edit, handlers, onClose }: TaskEditProps) {
             <option value="Other">Other</option>
           </select>
         </div>
-        <div className="border-b-2 border-light font-medium">
+        <div className="border-b-1 border-dark-grey/30 text-dark/80">
           <label htmlFor="limit">Limit</label>
         </div>
         <div className="bg-light w-full col-span-3 rounded-md">
@@ -114,7 +162,7 @@ function TaskEditPanel({ current, edit, handlers, onClose }: TaskEditProps) {
             onKeyDown={stopArrowPropagation}
           />
         </div>
-        <div className="border-b-2 border-light font-medium">
+        <div className="border-b-1 border-dark-grey/30 text-dark/80">
           <label htmlFor="note">Note</label>
         </div>
         <div className="bg-light w-full col-span-3 rounded-md">
@@ -129,38 +177,43 @@ function TaskEditPanel({ current, edit, handlers, onClose }: TaskEditProps) {
             onKeyDown={stopArrowPropagation}
           />
         </div>
-        <div className="font-medium">
+        <div className="text-dark/80">
           <label htmlFor="option">Option</label>
         </div>
-        <div className="col-start-4 col-span-1 py-1 px-2 flex justify-between items-center">
-          <input
-            id="option"
-            type="checkbox"
-            className="w-5 h-5 mt-1 border-none rounded-xl forcus:ring-2 focu:ring-brand-soft checked:bg-success"
-          />
-          <label htmlFor="option" className="font-medium">
-            view note
-          </label>
+        <div className="col-start-4 col-span-1 py-1 px-2 flex items-center">
+          <div className="flex">
+            <input
+              id="option"
+              type="checkbox"
+              name="option"
+              value="note"
+              className="appearance-none size-4 border-1 bg-light border-dark-grey rounded-md forcus:ring-2 focu:ring-brand-soft checked:bg-success"
+            />
+            <CheckIcon
+              size={10}
+              weight="bold"
+              className="invisible peer-has-checked:visible text-light"
+            />
+          </div>
+          <div className="flex justify-center items-center">
+            <label htmlFor="option" className="m-auto font-medium">
+              view note
+            </label>
+          </div>
         </div>
       </div>
-      <div className="flex justify-center gap-5">
+      <div className="flex justify-center gap-5 text-sm">
         <button
           type="button"
-          className="px-2 text-dark/80 rounded-md border-1 border-dark-grey/70 hover:bg-dark-grey/10 hover:shadow-sm"
-          onClick={() => {
-            handlers.resetData();
-            onClose?.();
-          }}
+          className="px-3 py-1 text-dark/70 rounded-xl border-1 border-dark-grey/20 bg-dark-grey/20 hover:bg-dark-grey/30"
+          onClick={() => handleCancelClick()}
         >
           Cancel
         </button>
         <button
           type="button"
-          className="flex px-4 text-white bg-success/90 rounded-md border-1 border-transparent hover:bg-success hover:border-success hover:shadow-sm"
-          onClick={() => {
-            taskManagerHandlers.editTask(id, edit);
-            onClose?.();
-          }}
+          className="px-4 py-1 text-white bg-success/90 rounded-xl border-1 border-transparent hover:bg-success hover:border-success"
+          onClick={() => handleSaveClick()}
         >
           Save
         </button>

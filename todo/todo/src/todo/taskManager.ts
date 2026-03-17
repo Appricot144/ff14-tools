@@ -28,14 +28,16 @@ function useTaskManager(initialTasks: TaskData[], initialOrder: string[]) {
 
   /**
    * update task's (name, rewards, note)
-   * don't use update for id
+   * don't use for update id
    * @param id
    * @param updatedTask
    */
   const editTask = (id: string, updatedTask: TaskData) => {
     listData.update(id, { ...updatedTask });
-    const otherTasks = taskList.filter((t) => t.id !== id);
-    setTaskList([...otherTasks, updatedTask]);
+    const newTaskList = taskList.map((task) =>
+      task.id === updatedTask.id ? updatedTask : task,
+    );
+    setTaskList([...newTaskList]);
   };
 
   const addTask = (insertAfterId: string, newTask: TaskData) => {
@@ -48,17 +50,23 @@ function useTaskManager(initialTasks: TaskData[], initialOrder: string[]) {
     setTaskList([...taskList.filter((t) => t.id !== id)]);
   };
 
+  /**
+   * merge new list to taskList
+   * @param newTaskList
+   */
   const updateTasks = (newTaskList: TaskData[]) => {
-    const itemsRef = [...listData.items];
-    itemsRef.forEach((item) => {
-      listData.update(
-        item.id,
-        newTaskList.find((t) => t.id === item.id) ?? item,
-      );
-    });
-    const newList = taskList.map(
-      (task) => newTaskList.find((t) => t.id === task.id) ?? task,
-    );
+    let newList: TaskData[] = taskList;
+    for (const newTask of newTaskList) {
+      const isNew = !taskList.map((t) => t.id).includes(newTask.id);
+      if (isNew) {
+        newList = [...newList, newTask];
+        listData.append(newTask);
+      } else {
+        newList = newList.map((old) => (old.id === newTask.id ? newTask : old));
+        listData.update(newTask.id, newTask);
+      }
+    }
+
     setTaskList([...newList]);
   };
 

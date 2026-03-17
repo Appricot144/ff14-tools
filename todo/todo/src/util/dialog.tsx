@@ -61,7 +61,12 @@ function Dialog({ isOpen, onClose, children }: Props) {
         onClick={handleClickBackDrop}
         onKeyDown={handleKeyDown}
       >
-        <div onClick={handleClickContent}>{children}</div>
+        <div
+          className="flex justify-center items-center"
+          onClick={handleClickContent}
+        >
+          {children}
+        </div>
       </dialog>
     </RemoveScroll>
   );

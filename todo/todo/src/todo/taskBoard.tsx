@@ -107,7 +107,7 @@ function TaskList({ category }: TaskListProps) {
 
   return (
     <>
-      <TaskHeader tasks={items} category={category} />
+      <TaskHeader category={category} />
       <div className="mb-5">
         <GridList
           aria-label="task list"
