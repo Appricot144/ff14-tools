@@ -65,7 +65,7 @@ function Task({ task }: TaskProps) {
           </div>
           <div className="flex flex-col flex-auto max-w-full">
             <div className="flex flex-col border-b-1 border-dark-grey">
-              <div className="flex flex-row gap-2 items-center justify-between min-w-full max-w-full pb-1">
+              <div className="flex flex-row gap-2 items-start justify-between min-w-full max-w-full pb-1">
                 <div
                   className={`${name === "" ? "text-dark-grey" : "text-dark"} max-w-fit px-2 py-1`}
                 >
@@ -75,7 +75,7 @@ function Task({ task }: TaskProps) {
                   onClick={() => setIsOpen(true)}
                   className="text-dark-grey px-1 rounded-md hover:shadow-sm"
                 >
-                  <DotsThreeIcon size={15} />
+                  <DotsThreeIcon size={20} />
                 </button>
               </div>
               {children.length !== 0 ? (

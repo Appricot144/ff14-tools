@@ -71,7 +71,7 @@ function TodoPage() {
   const tasks = checkTaskDeadline(tasklist, (tasklist) => tasklist);
   const taskManager = useTaskManager([...tasks!], initialTaskOrder);
   return (
-    <div className="bg-light rounded-2xl p-5">
+    <div>
       <TaskManagerContext value={taskManager}>
         <TaskBoard />
       </TaskManagerContext>

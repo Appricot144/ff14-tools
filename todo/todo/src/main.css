@@ -49,5 +49,6 @@ html {
 body {
   background: var(--grey);
   overflow-x: hidden;
+  scrollbar-width: thin;
   scrollbar-color: var(--dark-grey) var(--grey);
 }

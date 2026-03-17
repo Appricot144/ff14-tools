@@ -108,7 +108,7 @@ function TaskList({ category }: TaskListProps) {
   return (
     <>
       <TaskHeader category={category} />
-      <div className="mb-5">
+      <div className="bg-light rounded-2xl p-5 mb-5">
         <GridList
           aria-label="task list"
           selectionMode="single"

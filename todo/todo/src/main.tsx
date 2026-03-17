@@ -1,7 +1,7 @@
 import "./main.css";
 import ReactDom from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
-import Layout from "./layout";
+import { Layout } from "./layout";
 import { TodoPage } from "./todo/todo";
 
 const root = document.getElementById("root") as HTMLElement;

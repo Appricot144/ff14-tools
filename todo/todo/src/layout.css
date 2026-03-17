@@ -139,6 +139,7 @@
   left: 0;
   border-radius: 50%;
   box-shadow: -20px -20px 0 var(--light);
+  z-index: -1;
 }
 
 .content nav a {
@@ -221,6 +222,12 @@ main {
   max-height: calc(100vh - 56px);
   left: 230px;
   padding: 24px 24px;
+  transition: all 0.3s ease;
+}
+
+main.close {
+  width: calc(100% - 60px);
+  left: 60px;
 }
 
 dialog {
