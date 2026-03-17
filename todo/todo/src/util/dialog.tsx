@@ -52,7 +52,7 @@ function Dialog({ isOpen, onClose, children }: Props) {
   );
 
   return (
-    <RemoveScroll removeScrollBar enabled={isOpen}>
+    <RemoveScroll removeScrollBar={false} enabled={isOpen}>
       <dialog
         ref={dialogRef}
         role="dialog"
@@ -62,7 +62,7 @@ function Dialog({ isOpen, onClose, children }: Props) {
         onKeyDown={handleKeyDown}
       >
         <div
-          className="flex justify-center items-center"
+          className="flex justify-center items-center my-20"
           onClick={handleClickContent}
         >
           {children}

@@ -222,3 +222,9 @@ main {
   left: 230px;
   padding: 24px 24px;
 }
+
+dialog {
+  max-height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
