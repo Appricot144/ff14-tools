@@ -15,19 +15,22 @@ function TaskBoard() {
   }, [taskList]);
 
   useEffect(() => {
-    // check task check status every hour (here every 3s for demo)
-    const interval = setInterval(() => {
-      checkTaskDeadline(taskListRef.current, handlers.updateTasks);
-    }, 5 * 1000);
+    // check task check status every hour (here every 5m for demo)
+    const interval = setInterval(
+      () => {
+        checkTaskDeadline(taskListRef.current, handlers.updateTasks);
+      },
+      60 * 5 * 1000,
+    );
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <>
+    <div className="flex flex-wrap gap-4">
       <TaskList category="Daily" />
       <TaskList category="Weekly" />
-    </>
+    </div>
   );
 }
 
@@ -71,21 +74,21 @@ function TaskList({ category }: TaskListProps) {
             height={15}
             className="block w-full stroke-primary fill-none forced-colors:stroke-[Highlight]"
           >
-            <circle cx={5} cy={5} r={5 - 1} strokeWidth={2} />
+            <circle cx={5} cy={5} r={5 - 1} strokeWidth={1} />
             <line
               x1={20}
               x2="100%"
               transform="translate(-10 0)"
               y1={5}
               y2={5}
-              strokeWidth={2}
+              strokeWidth={1}
             />
             <circle
               cx="100%"
               cy={5}
               r={5 - 1}
               transform="translate(-5 0)"
-              strokeWidth={2}
+              strokeWidth={1}
             />
           </svg>
         </DropIndicator>
@@ -106,9 +109,9 @@ function TaskList({ category }: TaskListProps) {
   });
 
   return (
-    <>
+    <div className="flex flex-col grow p-2 bg-dark/2 rounded-xl">
       <TaskHeader category={category} />
-      <div className="bg-light rounded-2xl p-5 mb-5">
+      <div className="bg-transarent rounded-xl mb-5">
         <GridList
           aria-label="task list"
           selectionMode="single"
@@ -119,7 +122,7 @@ function TaskList({ category }: TaskListProps) {
           {(item) => <Task task={item} />}
         </GridList>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -20,7 +20,7 @@ function CheckCircle({
       <button
         onClick={() => onCheck(taskId)}
         data-ui={checked ? "checked" : ""}
-        className={`flex justify-center items-center size-full rounded-full bg-light border-1 border-dark-grey focus:ring-2 focus:ring-light data-[ui=checked]:bg-success data-[ui=checked]:border-success cursor-pointer`}
+        className={`flex justify-center items-center size-full rounded-full transition ease-in-out delay-10 bg-light border-1 border-dark-grey focus:ring-2 focus:ring-grey data-[ui=checked]:bg-success data-[ui=checked]:border-success cursor-pointer`}
       >
         <CheckIcon className="text-light m-1" weight="bold" size={size} />
       </button>

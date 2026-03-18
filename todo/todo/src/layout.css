@@ -7,6 +7,7 @@
   height: 100%;
   scrollbar-width: none;
   transition: all 0.3s ease;
+  z-index: 10;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -30,6 +31,7 @@
 
 .sidebar .logo .logo-name span {
   color: var(--dark);
+  overflow: hidden;
 }
 
 .sidebar .logo .icon {
@@ -138,6 +140,7 @@
   bottom: -40px;
   left: 0;
   border-radius: 50%;
+  background-color: var(--grey);
   box-shadow: -20px -20px 0 var(--light);
   z-index: -1;
 }
@@ -221,7 +224,7 @@ main {
   width: calc(100% - 230px);
   max-height: calc(100vh - 56px);
   left: 230px;
-  padding: 24px 24px;
+  padding: 22px 22px;
   transition: all 0.3s ease;
 }
 

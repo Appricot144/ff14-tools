@@ -65,7 +65,7 @@ function LayoutSideBar({ isOpen }: LayoutSideBarType) {
       <a href="#" className="logo">
         <CheckSquareIcon className="icon" size={40} />
         <div className="logo-name">
-          <span>Tools</span>
+          <span>{isOpen ? "Tools" : ""}</span>
         </div>
       </a>
 

@@ -40,8 +40,8 @@ function useTaskManager(initialTasks: TaskData[], initialOrder: string[]) {
     setTaskList([...newTaskList]);
   };
 
-  const addTask = (insertAfterId: string, newTask: TaskData) => {
-    listData.insertAfter(insertAfterId, newTask);
+  const addTask = (newTask: TaskData) => {
+    listData.append(newTask);
     setTaskList([...taskList, newTask]);
   };
 

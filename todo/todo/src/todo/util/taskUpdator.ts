@@ -1,4 +1,10 @@
-import { addWeeks, differenceInWeeks, endOfToday, isBefore } from "date-fns";
+import {
+  addDays,
+  addWeeks,
+  differenceInDays,
+  differenceInWeeks,
+  isBefore,
+} from "date-fns";
 import type { Category, TaskData } from "../data/taskData";
 
 /**
@@ -7,15 +13,29 @@ import type { Category, TaskData } from "../data/taskData";
  * @param category
  * @returns updated limit date (Date)
  */
-function updateLimit(limit: Date, category: Category): Date | undefined {
+function updateLimit(
+  limit: Date | undefined,
+  category: Category,
+): Date | undefined {
+  let defaultLimit: Date = new Date();
+
+  let aday: Date = defaultLimit;
+  if (limit) aday = limit;
+
   switch (category) {
     case "Daily":
-      return endOfToday();
+      return addDays(aday, differenceInDays(new Date(), aday) + 1);
     case "Weekly":
-      return addWeeks(limit, differenceInWeeks(new Date(), limit) + 1);
+      return addWeeks(aday, differenceInWeeks(new Date(), aday) + 1);
     default:
       return undefined;
   }
+}
+
+function validateLimit(taskList: TaskData[]): TaskData[] {
+  return taskList.map((task) => {
+    return { ...task, limit: updateLimit(task.limit, task.category) };
+  });
 }
 
 /**
@@ -40,7 +60,7 @@ const checkTaskDeadline = (
     }
     return task;
   });
-  if (changed) return updater(updatedTasks);
+  return updater(updatedTasks);
 };
 
-export { checkTaskDeadline, updateLimit };
+export { checkTaskDeadline, updateLimit, validateLimit };
