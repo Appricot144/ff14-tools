@@ -1,4 +1,9 @@
 import { Dialog } from "../../util/dialog";
+import {
+  Dialog as AriaDialog,
+  DialogTrigger,
+  Modal,
+} from "react-aria-components";
 import { useState, useContext } from "react";
 import { DotsThreeIcon } from "@phosphor-icons/react";
 import { Button, GridListItem } from "react-aria-components";
@@ -74,12 +79,25 @@ function Task({ task }: TaskProps) {
                 >
                   {taskName}
                 </div>
-                <button
-                  onClick={() => setIsOpen(true)}
-                  className="text-dark-grey px-1 rounded-md hover:shadow-sm"
-                >
-                  <DotsThreeIcon size={20} />
-                </button>
+                <DialogTrigger>
+                  <Button
+                    onClick={() => setIsOpen(true)}
+                    className="text-dark-grey px-1 rounded-md hover:shadow-sm"
+                  >
+                    <DotsThreeIcon size={20} />
+                  </Button>
+                  <Modal>
+                    <AriaDialog>
+                      <TaskEditPanel
+                        current={task}
+                        edit={edit}
+                        subTaskList={subTaskList}
+                        handlers={editHandlers}
+                        onClose={() => setIsOpen(false)}
+                      />
+                    </AriaDialog>
+                  </Modal>
+                </DialogTrigger>
               </div>
               {children.length !== 0 ? (
                 <div className="flex flex-col gap-y-1 pb-1">
@@ -97,22 +115,16 @@ function Task({ task }: TaskProps) {
             </div>
           </div>
         </div>
-        <Dialog
+        {/* <Dialog
           isOpen={isOpen}
           onClose={() => {
             editHandlers.resetSubTask();
             editHandlers.resetData();
             setIsOpen(false);
           }}
-        >
-          <TaskEditPanel
-            current={task}
-            edit={edit}
-            subTaskList={subTaskList}
-            handlers={editHandlers}
-            onClose={() => setIsOpen(false)}
-          />
-        </Dialog>
+        > */}
+
+        {/* </Dialog> */}
       </GridListItem>
     </>
   );
