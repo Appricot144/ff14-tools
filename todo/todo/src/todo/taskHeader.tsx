@@ -14,7 +14,7 @@ function TaskHeader({ category }: HeaderProps) {
     .filter((t) => isLeaf(t));
 
   return (
-    <div className="flex justify-between items-end border-b-2 border-dark-grey pb-2 px-2 mb-2">
+    <div className="flex justify-between items-end border-b-3 border-dark-grey pb-2 px-2 mb-2">
       <div className="flex items-end gap-5">
         <h1 className="text-dark text-3xl font-bold">{category}</h1>
         <div className="bg-success text-sm text-light rounded-md px-2">

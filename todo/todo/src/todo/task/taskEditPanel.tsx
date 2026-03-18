@@ -4,6 +4,7 @@ import { TaskData } from "../data/taskData";
 import { CheckIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
 import { TaskManagerContext } from "../taskManagerContext";
 import type { useEditPanel } from "./editPanelHooks";
+import { FocusScope } from "@react-aria/focus";
 
 type EditHandlersType = ReturnType<typeof useEditPanel>["handlers"];
 
@@ -47,7 +48,11 @@ function TaskEditPanel({
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ) => {
-    e.stopPropagation();
+    const k = e.key;
+    if (k.startsWith("Arrow")) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   };
 
   // TODO: extraction data transform logic (current to edit)

@@ -43,8 +43,24 @@ function Dialog({ isOpen, onClose, children }: Props) {
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDialogElement>) => {
       const k = event.key;
-      if (k === "Escape" || k.startsWith("Arrow")) {
-        console.log("pressed >", k);
+      if (k === "Escape") {
+        event.preventDefault();
+        onClose?.();
+      }
+      if (k.startsWith("Arrow")) {
+        console.log(k);
+        event.preventDefault();
+      }
+      event.stopPropagation();
+    },
+    [onClose],
+  );
+
+  const handleKeyDownCapture = useCallback(
+    (event: React.KeyboardEvent<HTMLDialogElement>) => {
+      const k = event.key;
+      if (k.startsWith("Arrow")) {
+        event.preventDefault();
         event.stopPropagation();
       }
     },
@@ -56,10 +72,15 @@ function Dialog({ isOpen, onClose, children }: Props) {
       <dialog
         ref={dialogRef}
         role="dialog"
-        aria-modal="true"
+        aria-modal="false"
         className="bg-transparent m-auto focus:ouline-none"
         onClick={handleClickBackDrop}
         onKeyDown={handleKeyDown}
+        onKeyDownCapture={handleKeyDownCapture}
+        onCancel={(e) => {
+          e.preventDefault();
+          onClose?.();
+        }}
       >
         <div
           className="flex justify-center items-center my-20"
