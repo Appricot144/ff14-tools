@@ -4,7 +4,6 @@ import { TaskData } from "../data/taskData";
 import { CheckIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
 import { TaskManagerContext } from "../taskManagerContext";
 import type { useEditPanel } from "./editPanelHooks";
-import { FocusScope } from "@react-aria/focus";
 
 type EditHandlersType = ReturnType<typeof useEditPanel>["handlers"];
 
@@ -43,18 +42,6 @@ function TaskEditPanel({
     handlers.editData("children", childrenIds);
   };
 
-  const stopArrowPropagation = (
-    e: React.KeyboardEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const k = e.key;
-    if (k.startsWith("Arrow")) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
-
   // TODO: extraction data transform logic (current to edit)
   useEffect(() => {
     handlers.editData("checked", current.checked);
@@ -73,9 +60,7 @@ function TaskEditPanel({
             placeholder="Task name ..."
             onChange={(e) => {
               handlers.editData("name", e.target.value);
-              stopArrowPropagation;
             }}
-            onKeyDown={stopArrowPropagation}
           />
         </div>
         <button
@@ -111,7 +96,6 @@ function TaskEditPanel({
               onChange={(e) => {
                 handlers.changeSubTaskField(child.id, "name", e.target.value);
               }}
-              onKeyDown={stopArrowPropagation}
             />
           ))}
         </div>
@@ -126,7 +110,6 @@ function TaskEditPanel({
             className="w-full py-1 px-2 rounded-md focus:outline-hidden focus:shadow-md"
             placeholder="rewards ..."
             onChange={(e) => handlers.editData("rewards", e.target.value)}
-            onKeyDown={stopArrowPropagation}
           />
         </div>
         <div className="border-b-1 border-dark-grey/30 text-dark/80">
@@ -138,7 +121,6 @@ function TaskEditPanel({
             value={category}
             className="w-full py-1 px-2 rounded-md focus:outline-hidden focus:shadow-md"
             onChange={(e) => handlers.editData("category", e.target.value)}
-            onKeyDown={stopArrowPropagation}
           >
             <option className="text-medium text-dark-grey">
               choose a category
@@ -164,7 +146,6 @@ function TaskEditPanel({
             onChange={(e) =>
               handlers.editData("limit", new Date(e.target.value))
             }
-            onKeyDown={stopArrowPropagation}
           />
         </div>
         <div className="border-b-1 border-dark-grey/30 text-dark/80">
@@ -179,7 +160,6 @@ function TaskEditPanel({
             cols={40}
             placeholder=""
             onChange={(e) => handlers.editData("note", e.target.value)}
-            onKeyDown={stopArrowPropagation}
           />
         </div>
         <div className="text-dark/80">

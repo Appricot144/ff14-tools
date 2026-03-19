@@ -1,9 +1,4 @@
-import { Dialog } from "../../util/dialog";
-import {
-  Dialog as AriaDialog,
-  DialogTrigger,
-  Modal,
-} from "react-aria-components";
+import { Dialog, DialogTrigger } from "react-aria-components";
 import { useState, useContext } from "react";
 import { DotsThreeIcon } from "@phosphor-icons/react";
 import { Button, GridListItem } from "react-aria-components";
@@ -13,6 +8,7 @@ import { format } from "date-fns";
 import { TaskEditPanel } from "./taskEditPanel";
 import { useEditPanel } from "./editPanelHooks";
 import { CheckCircle } from "../util/ui/CheckCircle";
+import { Modal } from "../../util/Modal";
 
 interface TaskProps {
   task: TaskData;
@@ -50,6 +46,12 @@ function Task({ task }: TaskProps) {
     return;
   };
 
+  const handleClickEditPanelOverlay = (openState: boolean) => {
+    editHandlers.resetSubTask();
+    editHandlers.resetData();
+    setIsOpen(openState);
+  }
+
   const taskNameColor = name === "" ? "text-dark-grey" : "text-dark/80";
   const taskName = name === "" ? "no name task" : name;
 
@@ -86,8 +88,8 @@ function Task({ task }: TaskProps) {
                   >
                     <DotsThreeIcon size={20} />
                   </Button>
-                  <Modal>
-                    <AriaDialog>
+                  <Modal isOpen={isOpen} onOpenChange={handleClickEditPanelOverlay} isDismissable>
+                    <Dialog>
                       <TaskEditPanel
                         current={task}
                         edit={edit}
@@ -95,7 +97,7 @@ function Task({ task }: TaskProps) {
                         handlers={editHandlers}
                         onClose={() => setIsOpen(false)}
                       />
-                    </AriaDialog>
+                    </Dialog>
                   </Modal>
                 </DialogTrigger>
               </div>
