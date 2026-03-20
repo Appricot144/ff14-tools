@@ -26,7 +26,12 @@ function Task({ task }: TaskProps) {
     handlers: editHandlers,
   } = useEditPanel(task, taskList);
 
-  const children = taskList.filter((t) => t.parent === task.id);
+  const childMap = new Map(
+    taskList.filter((t) => t.parent === task.id).map((t) => [t.id, t]),
+  );
+  const children = (task.children ?? [])
+    .map((id) => childMap.get(id))
+    .filter((t): t is TaskData => t !== undefined);
 
   if (isChild(task)) {
     return null;

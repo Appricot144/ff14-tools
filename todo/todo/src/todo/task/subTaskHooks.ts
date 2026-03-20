@@ -42,6 +42,14 @@ function useSubTasks(initialSubTaskList: TaskData[]) {
     return subTaskList.map((t) => t.id);
   };
 
+  const reorderSubTask = (orderedIds: string[]) => {
+    const taskMap = new Map(subTaskList.map((t) => [t.id, t]));
+    const reordered = orderedIds
+      .map((id) => taskMap.get(id))
+      .filter((t): t is TaskData => t !== undefined);
+    setSubTaskList(reordered);
+  };
+
   const resetSubTask = () => {
     setSubTaskList([...initialSubTaskList]);
   };
@@ -52,6 +60,7 @@ function useSubTasks(initialSubTaskList: TaskData[]) {
       changeSubTaskField,
       addEmptySubTask,
       deleteSubTask,
+      reorderSubTask,
       resetSubTask,
     },
   };

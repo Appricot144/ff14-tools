@@ -1,7 +1,14 @@
 import { useEffect, useContext } from "react";
 import { format } from "date-fns";
+import {
+  Button,
+  DropIndicator,
+  GridList,
+  GridListItem,
+  useDragAndDrop,
+} from "react-aria-components";
 import { TaskData } from "../data/taskData";
-import { CheckIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
+import { CheckIcon, DotsSixVerticalIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
 import { TaskManagerContext } from "../taskManagerContext";
 import type { useEditPanel } from "./editPanelHooks";
 
@@ -41,6 +48,47 @@ function TaskEditPanel({
     const childrenIds = handlers.addEmptySubTask(id, category);
     handlers.editData("children", childrenIds);
   };
+
+  const { dragAndDropHooks } = useDragAndDrop({
+    getItems(_keys, items: TaskData[]) {
+      return items.map((item) => ({
+        "text/plain": item.name ?? "",
+        "subtask": JSON.stringify(item),
+      }));
+    },
+    acceptedDragTypes: ["subtask"],
+    getDropOperation: () => "move",
+    onReorder(e) {
+      const currentIds = subTaskList.map((t) => t.id);
+      const movedKeys = [...e.keys].map(String);
+      const targetKey = String(e.target.key);
+      const targetIndex = currentIds.indexOf(targetKey);
+
+      const remaining = currentIds.filter((id) => !movedKeys.includes(id));
+      const insertIndex = e.target.dropPosition === "before"
+        ? remaining.indexOf(targetKey) >= 0
+          ? remaining.indexOf(targetKey)
+          : targetIndex
+        : (remaining.indexOf(targetKey) >= 0
+          ? remaining.indexOf(targetKey) + 1
+          : targetIndex + 1);
+
+      remaining.splice(insertIndex, 0, ...movedKeys);
+      handlers.reorderSubTask(remaining);
+    },
+    renderDropIndicator(target) {
+      return (
+        <DropIndicator target={target}>
+          <svg
+            height={4}
+            className="block w-full stroke-primary fill-none"
+          >
+            <line x1={0} x2="100%" y1={2} y2={2} strokeWidth={2} />
+          </svg>
+        </DropIndicator>
+      );
+    },
+  });
 
   // TODO: extraction data transform logic (current to edit)
   useEffect(() => {
@@ -86,18 +134,43 @@ function TaskEditPanel({
               <span>add sub task</span>
             </button>
           </div>
-          {subTaskList.map((child) => (
-            <input
-              key={child.id}
-              type="text"
-              value={child.name ?? ""}
-              placeholder="Sub task name ..."
-              className="w-full py-1 px-2 rounded-md bg-light focus:outline-hidden focus:shadow-md"
-              onChange={(e) => {
-                handlers.changeSubTaskField(child.id, "name", e.target.value);
-              }}
-            />
-          ))}
+          <GridList
+            aria-label="sub task list"
+            items={subTaskList}
+            dragAndDropHooks={dragAndDropHooks}
+            className="flex flex-col gap-y-1"
+          >
+            {(child) => (
+              <GridListItem
+                id={child.id}
+                textValue={child.name ?? `subtask-${child.id}`}
+                className="flex items-center gap-1 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+              >
+                <Button slot="drag" className="cursor-grab text-dark-grey/50 hover:text-dark-grey">
+                  <DotsSixVerticalIcon size={14} weight="bold" />
+                </Button>
+                <input
+                  type="text"
+                  value={child.name ?? ""}
+                  placeholder="Sub task name ..."
+                  className="w-full py-1 px-2 rounded-md bg-light focus:outline-hidden focus:shadow-md"
+                  onChange={(e) => {
+                    handlers.changeSubTaskField(child.id, "name", e.target.value);
+                  }}
+                />
+                <button
+                  type="button"
+                  className="text-dark-grey/50 hover:text-dark-grey shrink-0"
+                  onClick={() => {
+                    const childrenIds = handlers.deleteSubTask(child.id);
+                    handlers.editData("children", childrenIds);
+                  }}
+                >
+                  <XIcon size={14} weight="bold" />
+                </button>
+              </GridListItem>
+            )}
+          </GridList>
         </div>
         <div className="border-b-1 border-dark-grey/30 text-dark/80">
           <label htmlFor="rewards">Rewards</label>

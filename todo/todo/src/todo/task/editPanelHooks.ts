@@ -52,10 +52,20 @@ function useEditPanel(
     }
   }
 
+  const reorderSubTask = (orderedIds: string[]) => {
+    subTaskHandlers.reorderSubTask(orderedIds);
+    dispatch(actions.setField("children", orderedIds));
+  };
+
   return {
     edit,
     subTaskList,
-    handlers: { editData, resetData, ...subTaskHandlers },
+    handlers: {
+      editData,
+      resetData,
+      ...subTaskHandlers,
+      reorderSubTask,
+    },
   };
 }
 
