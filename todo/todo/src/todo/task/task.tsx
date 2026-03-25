@@ -122,16 +122,6 @@ function Task({ task }: TaskProps) {
             </div>
           </div>
         </div>
-        {/* <Dialog
-          isOpen={isOpen}
-          onClose={() => {
-            editHandlers.resetSubTask();
-            editHandlers.resetData();
-            setIsOpen(false);
-          }}
-        > */}
-
-        {/* </Dialog> */}
       </GridListItem>
     </>
   );

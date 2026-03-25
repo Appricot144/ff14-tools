@@ -1,57 +1,60 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { type Category, TaskData } from "../data/taskData";
 
 type TaskDataFieldType = TaskData[keyof TaskData];
 
-function useSubTasks(initialSubTaskList: TaskData[]) {
-  const [subTaskList, setSubTaskList] = useState(initialSubTaskList);
+function useSubTasks(
+  orderedIds: string[],
+  baseChildMap: Map<string, TaskData>,
+) {
+  const [draftById, setDraftById] = useState<Record<string, TaskData>>({});
 
-  // ------ handers ------
+  const subTaskList = useMemo(() => {
+    return orderedIds
+      .map((id) => draftById[id] ?? baseChildMap.get(id))
+      .filter((t): t is TaskData => t !== undefined);
+  }, [orderedIds, draftById, baseChildMap]);
+
+  // ------ handlers ------
   const changeSubTaskField = (
     id: string,
-    field: string,
+    field: keyof TaskData,
     value: TaskDataFieldType,
   ) => {
-    let newTask: TaskData = subTaskList.find((task) => task.id === id)!;
-    if (!newTask) return;
+    const base = draftById[id] ?? baseChildMap.get(id);
+    if (!base) return;
 
-    const newList = subTaskList.map((task) =>
-      task.id === id ? { ...newTask, [field]: value } : task,
-    );
-    setSubTaskList([...newList]);
+    const updated = { ...base, [field]: value } as TaskData;
+    setDraftById((prev) => ({ ...prev, [id]: updated }));
   };
 
   /**
    * add empty task to sub task list
-   * @param category
-   * @returns children's id list (children of parent task)
+   * @returns children id list (order preserved by caller via `edit.children`)
    */
   const addEmptySubTask = (parentId: string, category: Category): string[] => {
-    const newbie = { ...new TaskData(category), parent: parentId };
-    setSubTaskList([...subTaskList, newbie]);
-    return subTaskList.map((t) => t.id);
+    const newbie = new TaskData(category);
+    newbie.parent = parentId;
+
+    setDraftById((prev) => ({ ...prev, [newbie.id]: newbie }));
+    return [...orderedIds, newbie.id];
   };
 
   /**
    * delete a task from sub task list
-   * @param id
-   * @returns children's id list (children of parent task)
+   * @returns children's id list (order preserved)
    */
-  const deleteSubTask = (id: string) => {
-    setSubTaskList([...subTaskList.filter((t) => t.id !== id)]);
-    return subTaskList.map((t) => t.id);
-  };
-
-  const reorderSubTask = (orderedIds: string[]) => {
-    const taskMap = new Map(subTaskList.map((t) => [t.id, t]));
-    const reordered = orderedIds
-      .map((id) => taskMap.get(id))
-      .filter((t): t is TaskData => t !== undefined);
-    setSubTaskList(reordered);
+  const deleteSubTask = (id: string): string[] => {
+    setDraftById((prev) => {
+      if (!(id in prev)) return prev;
+      const { [id]: _removed, ...rest } = prev;
+      return rest;
+    });
+    return orderedIds.filter((t) => t !== id);
   };
 
   const resetSubTask = () => {
-    setSubTaskList([...initialSubTaskList]);
+    setDraftById({});
   };
 
   return {
@@ -60,7 +63,6 @@ function useSubTasks(initialSubTaskList: TaskData[]) {
       changeSubTaskField,
       addEmptySubTask,
       deleteSubTask,
-      reorderSubTask,
       resetSubTask,
     },
   };

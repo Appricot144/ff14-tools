@@ -43,7 +43,7 @@ function TaskList({ category }: TaskListProps) {
   const items = listData.items.filter((item) => item.category === category);
 
   let { dragAndDropHooks } = useDragAndDrop({
-    getItems(keys, items: TaskData[]) {
+    getItems(_keys, items: TaskData[]) {
       return items.map((item) => {
         return {
           "text/plain": `${item.name} – ${item.rewards}`,

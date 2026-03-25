@@ -18,11 +18,19 @@ function useEditPanel(
 ) {
   const [edit, dispatch] = useReducer(formReducer, currentParentTask);
 
-  const currentChildren = edit.children
-    ? currentTaskList.filter((t) => t.parent === edit.id)
-    : [];
-  const { subTaskList, handlers: subTaskHandlers } =
-    useSubTasks(currentChildren);
+  const childMap = new Map(
+    currentTaskList
+      .filter((t) => t.parent === edit.id)
+      .map((t) => [t.id, t]),
+  );
+
+  // order of truth: edit.children（new/sub/reorder を反映）
+  const orderedIds = edit.children ?? [];
+
+  const { subTaskList, handlers: subTaskHandlers } = useSubTasks(
+    orderedIds,
+    childMap,
+  );
 
   const actions = {
     setField: (field: keyof TaskData, value: FieldType) => ({
@@ -53,7 +61,6 @@ function useEditPanel(
   }
 
   const reorderSubTask = (orderedIds: string[]) => {
-    subTaskHandlers.reorderSubTask(orderedIds);
     dispatch(actions.setField("children", orderedIds));
   };
 

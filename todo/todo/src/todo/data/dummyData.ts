@@ -22,7 +22,7 @@ const fixedTaskList: TaskData[] = [
     parent: "1",
   },
   {
-    id: "1-3",
+    id: "1-2",
     checked: true,
     name: "レベルキャップ",
     rewards: "アラガントームストーン数理×100, 記憶x150",
@@ -31,7 +31,7 @@ const fixedTaskList: TaskData[] = [
     parent: "1",
   },
   {
-    id: "1-4",
+    id: "1-3",
     checked: true,
     name: "ハイレベリング",
     rewards: "アラガントームストーン数理×100, 記憶x150",
@@ -40,7 +40,7 @@ const fixedTaskList: TaskData[] = [
     parent: "1",
   },
   {
-    id: "1-5",
+    id: "1-4",
     checked: true,
     name: "レベリング",
     rewards: "アラガントームストーン数理×100, 記憶x150",
@@ -49,7 +49,7 @@ const fixedTaskList: TaskData[] = [
     parent: "1",
   },
   {
-    id: "1-6",
+    id: "1-5",
     checked: true,
     name: "討伐・討滅戦",
     rewards: "アラガントームストーン数理×100, 記憶x150",
@@ -58,7 +58,7 @@ const fixedTaskList: TaskData[] = [
     parent: "1",
   },
   {
-    id: "1-7",
+    id: "1-6",
     checked: true,
     name: "メインクエスト",
     rewards: "アラガントームストーン数理×100, 記憶x150",
@@ -67,7 +67,7 @@ const fixedTaskList: TaskData[] = [
     parent: "1",
   },
   {
-    id: "1-8",
+    id: "1-7",
     checked: true,
     name: "アライアンス",
     rewards: "アラガントームストーン数理×100, 記憶x150",
@@ -76,7 +76,7 @@ const fixedTaskList: TaskData[] = [
     parent: "1",
   },
   {
-    id: "1-9",
+    id: "1-8",
     checked: true,
     name: "ノーマルレイド",
     rewards: "アラガントームストーン数理×100, 記憶x150",
