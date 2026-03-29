@@ -52,10 +52,9 @@ function Task({ task }: TaskProps) {
   };
 
   const handleClickEditPanelOverlay = (openState: boolean) => {
-    editHandlers.resetSubTask();
     editHandlers.resetData();
     setIsOpen(openState);
-  }
+  };
 
   const taskNameColor = name === "" ? "text-dark-grey" : "text-dark/80";
   const taskName = name === "" ? "no name task" : name;

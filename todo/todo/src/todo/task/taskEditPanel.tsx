@@ -34,19 +34,24 @@ function TaskEditPanel({
   const { id, name, rewards, category, limit, note } = edit!;
 
   const handleSaveClick = () => {
+    const prevIds = new Set(current.children ?? []);
+    const nextIds = new Set(edit.children ?? []);
     taskManagerHandlers.updateTasks([...subTaskList, edit]);
+    for (const childId of prevIds) {
+      if (!nextIds.has(childId)) {
+        taskManagerHandlers.deleteTask(childId);
+      }
+    }
     onClose?.();
   };
 
   const handleCancelClick = () => {
     handlers.resetData();
-    handlers.resetSubTask();
     onClose?.();
   };
 
   const handleAddSubTaskClick = () => {
-    const childrenIds = handlers.addEmptySubTask(id, category);
-    handlers.editData("children", childrenIds);
+    handlers.addEmptySubTask(id, category);
   };
 
   const { dragAndDropHooks } = useDragAndDrop({
@@ -162,8 +167,7 @@ function TaskEditPanel({
                   type="button"
                   className="text-dark-grey/50 hover:text-dark-grey shrink-0"
                   onClick={() => {
-                    const childrenIds = handlers.deleteSubTask(child.id);
-                    handlers.editData("children", childrenIds);
+                    handlers.deleteSubTask(child.id);
                   }}
                 >
                   <XIcon size={14} weight="bold" />
