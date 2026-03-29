@@ -1,5 +1,5 @@
 import { useListData } from "react-aria-components";
-import { TaskData } from "./data/taskData";
+import { TaskData } from "../data/taskData";
 import { useState } from "react";
 
 // TODO: store task list if edit task

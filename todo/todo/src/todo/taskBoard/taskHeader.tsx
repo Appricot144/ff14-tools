@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { isLeaf, TaskData, type Category } from "./data/taskData";
+import { isLeaf, TaskData, type Category } from "../data/taskData";
 import { PlusIcon } from "@phosphor-icons/react";
 import { TaskManagerContext } from "./taskManagerContext";
 
@@ -8,7 +8,7 @@ interface HeaderProps {
 }
 
 function TaskHeader({ category }: HeaderProps) {
-  const { listData, taskList, handlers } = useContext(TaskManagerContext)!;
+  const { taskList, handlers } = useContext(TaskManagerContext)!;
   const items = taskList
     .filter((t) => t.category === category)
     .filter((t) => isLeaf(t));
@@ -29,7 +29,7 @@ function TaskHeader({ category }: HeaderProps) {
           }}
         >
           <PlusIcon size={12} weight="bold" />
-          <div className="relative -top-[1px]">new</div>
+          <div className="relative -top-px">new</div>
         </button>
       </div>
     </div>

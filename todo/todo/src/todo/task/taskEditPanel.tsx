@@ -8,8 +8,13 @@ import {
   useDragAndDrop,
 } from "react-aria-components";
 import { TaskData } from "../data/taskData";
-import { CheckIcon, DotsSixVerticalIcon, PlusIcon, XIcon } from "@phosphor-icons/react";
-import { TaskManagerContext } from "../taskManagerContext";
+import {
+  CheckIcon,
+  DotsSixVerticalIcon,
+  PlusIcon,
+  XIcon,
+} from "@phosphor-icons/react";
+import { TaskManagerContext } from "../taskBoard/taskManagerContext";
 import type { useEditPanel } from "./editPanelHooks";
 
 type EditHandlersType = ReturnType<typeof useEditPanel>["handlers"];
@@ -58,7 +63,7 @@ function TaskEditPanel({
     getItems(_keys, items: TaskData[]) {
       return items.map((item) => ({
         "text/plain": item.name ?? "",
-        "subtask": JSON.stringify(item),
+        subtask: JSON.stringify(item),
       }));
     },
     acceptedDragTypes: ["subtask"],
@@ -70,13 +75,14 @@ function TaskEditPanel({
       const targetIndex = currentIds.indexOf(targetKey);
 
       const remaining = currentIds.filter((id) => !movedKeys.includes(id));
-      const insertIndex = e.target.dropPosition === "before"
-        ? remaining.indexOf(targetKey) >= 0
-          ? remaining.indexOf(targetKey)
-          : targetIndex
-        : (remaining.indexOf(targetKey) >= 0
-          ? remaining.indexOf(targetKey) + 1
-          : targetIndex + 1);
+      const insertIndex =
+        e.target.dropPosition === "before"
+          ? remaining.indexOf(targetKey) >= 0
+            ? remaining.indexOf(targetKey)
+            : targetIndex
+          : remaining.indexOf(targetKey) >= 0
+            ? remaining.indexOf(targetKey) + 1
+            : targetIndex + 1;
 
       remaining.splice(insertIndex, 0, ...movedKeys);
       handlers.reorderSubTask(remaining);
@@ -84,10 +90,7 @@ function TaskEditPanel({
     renderDropIndicator(target) {
       return (
         <DropIndicator target={target}>
-          <svg
-            height={4}
-            className="block w-full stroke-primary fill-none"
-          >
+          <svg height={4} className="block w-full stroke-primary fill-none">
             <line x1={0} x2="100%" y1={2} y2={2} strokeWidth={2} />
           </svg>
         </DropIndicator>
@@ -151,7 +154,10 @@ function TaskEditPanel({
                 textValue={child.name ?? `subtask-${child.id}`}
                 className="flex items-center gap-1 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
               >
-                <Button slot="drag" className="cursor-grab text-dark-grey/50 hover:text-dark-grey">
+                <Button
+                  slot="drag"
+                  className="cursor-grab text-dark-grey/50 hover:text-dark-grey"
+                >
                   <DotsSixVerticalIcon size={14} weight="bold" />
                 </Button>
                 <input
@@ -160,7 +166,11 @@ function TaskEditPanel({
                   placeholder="Sub task name ..."
                   className="w-full py-1 px-2 rounded-md bg-light focus:outline-hidden focus:shadow-md"
                   onChange={(e) => {
-                    handlers.changeSubTaskField(child.id, "name", e.target.value);
+                    handlers.changeSubTaskField(
+                      child.id,
+                      "name",
+                      e.target.value,
+                    );
                   }}
                 />
                 <button

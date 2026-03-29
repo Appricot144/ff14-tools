@@ -1,6 +1,6 @@
-import { TaskBoard } from "./taskBoard";
-import { TaskManagerContext } from "./taskManagerContext";
-import { useTaskManager } from "./taskManager";
+import { TaskBoard } from "./taskBoard/taskBoard";
+import { TaskManagerContext } from "./taskBoard/taskManagerContext";
+import { useTaskManager } from "./taskBoard/taskManager";
 import { checkTaskDeadline, validateLimit } from "./util/taskUpdator";
 import { fixedTaskList, initialTaskOrder } from "./data/dummyData";
 
