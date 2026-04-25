@@ -1,6 +1,8 @@
 import { useListData } from "react-aria-components";
 import { TaskData } from "../data/taskData";
 import { useState } from "react";
+import { updateLimit, validateLimit, validateSubtaskLimit } from "../util/taskUpdator";
+import { isBefore } from "date-fns";
 
 // TODO: store task list if edit task
 
@@ -46,15 +48,22 @@ function useTaskManager(initialTasks: TaskData[], initialOrder: string[]) {
   };
 
   const deleteTask = (id: string) => {
-    listData.remove(id);
-    setTaskList([...taskList.filter((t) => t.id !== id)]);
+    // cascade delete (subtask)
+    const deleteList = taskList.filter(task => task.parent && task.parent === id || task.id === id);
+    for(const target of deleteList) {
+      listData.remove(target.id);
+    }
+
+    const newTaskList = taskList.filter(t => !t.parent || t.parent !== id || t.id !== id);
+    setTaskList([...newTaskList]);
   };
 
   /**
-   * merge new list to taskList
+   * merge list to taskList
    * @param newTaskList
    */
   const updateTasks = (newTaskList: TaskData[]) => {
+    // update aria list 
     let newList: TaskData[] = taskList;
     for (const newTask of newTaskList) {
       const isNew = !taskList.map((t) => t.id).includes(newTask.id);
@@ -66,14 +75,47 @@ function useTaskManager(initialTasks: TaskData[], initialOrder: string[]) {
         listData.update(newTask.id, newTask);
       }
     }
-
+    newList = validateSubtaskLimit(newList);
+    // update tasklist
     setTaskList([...newList]);
   };
+
+  /**
+   * update expire tasks 
+   * - check: false
+   * - limit: next limit
+   */
+  const expireTasks = () => {
+    const now = new Date();
+    setTaskList((prev) =>
+      prev.map((t) => {
+        if (!(t.checked && isBefore(t.limit, now))) {
+          return t;
+        }
+
+        const updated = {
+          ...t,
+          checked: false,
+          limit: updateLimit(t.limit, t.category),
+        };
+
+        // GridList renders from listData, so keep both stores in sync.
+        listData.update(updated.id, updated);
+        return updated;
+      }),
+    );
+  }
+
+  /**
+   * trigger render
+   * @returns 
+   */
+  const rerender = () => setTaskList(prev => [...prev]); 
 
   return {
     listData,
     taskList,
-    handlers: { checkTask, updateTasks, editTask, addTask, deleteTask },
+    handlers: { checkTask, updateTasks, editTask, addTask, deleteTask, expireTasks, rerender },
   };
 }
 

@@ -16,6 +16,7 @@ import {
 } from "@phosphor-icons/react";
 import { TaskManagerContext } from "../taskBoard/taskManagerContext";
 import type { useEditPanel } from "./editPanelHooks";
+import { validateLimit } from "../util/taskUpdator";
 
 type EditHandlersType = ReturnType<typeof useEditPanel>["handlers"];
 
@@ -56,7 +57,7 @@ function TaskEditPanel({
   };
 
   const handleAddSubTaskClick = () => {
-    handlers.addEmptySubTask(id, category);
+    handlers.addEmptySubTask(id, limit, category);
   };
 
   const { dragAndDropHooks } = useDragAndDrop({

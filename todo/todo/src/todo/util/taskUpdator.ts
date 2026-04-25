@@ -14,9 +14,9 @@ import type { Category, TaskData } from "../data/taskData";
  * @returns updated limit date (Date)
  */
 function updateLimit(
-  limit: Date | undefined,
+  limit: Date,
   category: Category,
-): Date | undefined {
+): Date {
   let defaultLimit: Date = new Date();
 
   let aday: Date = defaultLimit;
@@ -28,39 +28,54 @@ function updateLimit(
     case "Weekly":
       return addWeeks(aday, differenceInWeeks(new Date(), aday) + 1);
     default:
-      return undefined;
+      throw new Error('illigal category:' + category);
   }
 }
 
+/**
+ * 全てのtaskのlimitをvalidateする
+ * - validateの定義: updateLimit()
+ * @param taskList
+ * @returns 
+ */
 function validateLimit(taskList: TaskData[]): TaskData[] {
+  const now = new Date();
+  const targets = taskList.filter(t => isBefore(t.limit, now));
+  if(!targets) return taskList;
+
   return taskList.map((task) => {
-    return { ...task, limit: updateLimit(task.limit, task.category) };
+    return isBefore(task.limit, now) 
+      ? { ...task, limit: updateLimit(task.limit, task.category) }
+      : task; 
   });
 }
 
 /**
- * limit and checked state updator for system
- * e.g. setInterval(() => checkTaskDeadline(...))
- * @param currentList
- * @param updater
+ * parent task と sub task のlimitをそろえる
+ * @param taskList 
+ * @returns 
  */
+function validateSubtaskLimit(taskList: TaskData[]) {
+  const parents = taskList.filter(t => t.children);
+  return taskList.map(t => {
+    const parentId = t.parent;
+    if(parentId){
+      const parent = parents.find(p => parentId === p.id);
+      t.limit = parent ? parent.limit : t.limit;
+    }
+    return t;
+  });
+}
+
 const checkTaskDeadline = (
   currentList: TaskData[],
   updater: (list: TaskData[]) => TaskData[] | void,
 ) => {
-  let changed = false;
-  const updatedTasks = currentList.map((task) => {
-    if (task.limit && isBefore(task.limit, new Date())) {
-      changed = true;
-      return {
-        ...task,
-        checked: false,
-        limit: updateLimit(task.limit, task.category),
-      };
-    }
-    return task;
-  });
+  const updatedTasks = currentList.map((task) => isBefore(task.limit, new Date()) 
+      ? {...task, checked: false, limit: updateLimit(task.limit, task.category)} 
+      : task 
+    ); 
   return updater(updatedTasks);
 };
 
-export { checkTaskDeadline, updateLimit, validateLimit };
+export { checkTaskDeadline, updateLimit, validateLimit, validateSubtaskLimit };

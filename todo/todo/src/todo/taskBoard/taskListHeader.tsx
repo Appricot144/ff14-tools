@@ -7,7 +7,7 @@ interface HeaderProps {
   category: Category;
 }
 
-function TaskHeader({ category }: HeaderProps) {
+function TaskListHeader({ category }: HeaderProps) {
   const { taskList, handlers } = useContext(TaskManagerContext)!;
   const items = taskList
     .filter((t) => t.category === category)
@@ -36,4 +36,4 @@ function TaskHeader({ category }: HeaderProps) {
   );
 }
 
-export { TaskHeader };
+export { TaskListHeader };

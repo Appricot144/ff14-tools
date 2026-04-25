@@ -1,31 +1,39 @@
 import { DropIndicator, GridList, useDragAndDrop } from "react-aria-components";
 import { type Category, type TaskData } from "../data/taskData";
 import { Task } from "../task/task";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect } from "react";
 import { TaskManagerContext } from "./taskManagerContext";
-import { TaskHeader } from "./taskHeader";
-import { checkTaskDeadline } from "../util/taskUpdator";
+import { TaskListHeader } from "./taskListHeader";
 import type { useTaskManager } from "./taskManager";
+import { TaskBoardHeader } from "./taskBoardHeader";
 
 function TaskBoard() {
   const { taskList, handlers } = useContext(TaskManagerContext)!;
-  const taskListRef = useRef<TaskData[]>(taskList);
 
+  // update checked variable to false & task limit
   useEffect(() => {
-    taskListRef.current = taskList;
-  }, [taskList]);
+    const now = new Date();
+    const checkedTasks = taskList.filter((t) => t.checked);
+    const existsExpired = checkedTasks.some((t) => t.limit <= now);
+    if (existsExpired) {
+      handlers.expireTasks();
+      return;
+    }
 
-  useEffect(() => {
-    // check task check status every hour (here every 5m for demo)
-    const interval = setInterval(
-      () => {
-        checkTaskDeadline(taskListRef.current, handlers.updateTasks);
-      },
-      60 * 5 * 1000,
-    );
+    const next = checkedTasks.reduce<TaskData | null>((soonest, task) => {
+      if (soonest === null || task.limit.getTime() < soonest.limit.getTime()) {
+        return task;
+      }
+      return soonest;
+    }, null);
+    if (!next) return;
 
-    return () => clearInterval(interval);
-  }, []);
+    // 時間が来たら再レンダリングをトリガー
+    const delay = Math.max(0, next.limit.getTime() - now.getTime());
+    const timer = setTimeout(handlers.rerender, delay);
+    
+    return () => clearTimeout(timer);
+  }, [taskList, handlers]);
 
   return (
     <div>
@@ -33,39 +41,6 @@ function TaskBoard() {
       <div className="flex flex-wrap gap-4">
         <TaskList category="Daily" />
         <TaskList category="Weekly" />
-      </div>
-    </div>
-  );
-}
-
-type TaskListHandlerType = ReturnType<typeof useTaskManager>["handlers"];
-
-interface TaskBoardHeaderProps {
-  taskList: TaskData[];
-  taskListHandler: TaskListHandlerType;
-}
-
-function TaskBoardHeader({ taskList, taskListHandler }: TaskBoardHeaderProps) {
-  const handlers = taskListHandler;
-  return (
-    <div className="flex flex-row justify-between items-end bg-dark/2 rounded-xl p-2 mb-3">
-      <h1 className="text-4xl font-bold text-dark">Todo</h1>
-      <div
-        id="task-template-panel"
-        className="flex flex-row justify-end items-end gap-1"
-      >
-        <button
-          className="px-2 py-1 rounded-md bg-primary hover:bg-primary/80 text-light text-sm hover:shadow-sm hover:cursor-pointer"
-          onClick={() => alert("select tempalte")}
-        >
-          select template
-        </button>
-        <button
-          className="px-2 py-1 rounded-md bg-primary hover:bg-primary/80 text-light text-sm hover:shadow-sm hover:cursor-pointer"
-          onClick={() => alert("save tempalte")}
-        >
-          save template
-        </button>
       </div>
     </div>
   );
@@ -147,7 +122,7 @@ function TaskList({ category }: TaskListProps) {
 
   return (
     <div className="flex flex-col grow p-2 bg-dark/2 rounded-xl">
-      <TaskHeader category={category} />
+      <TaskListHeader category={category} />
       <div className="bg-transarent rounded-xl mb-5">
         <GridList
           aria-label="task list"

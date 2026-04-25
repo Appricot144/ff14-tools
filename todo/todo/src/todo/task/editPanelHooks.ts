@@ -132,9 +132,10 @@ function useEditPanel(
     dispatch({ type: "SUBTASK_PATCH", payload: { id, task: updated } });
   };
 
-  const addEmptySubTask = (parentId: string, category: Category) => {
+  const addEmptySubTask = (parentId: string, parentLimit: Date, category: Category) => {
     const newbie = new TaskData(category);
     newbie.parent = parentId;
+    newbie.limit = parentLimit;
     dispatch({ type: "SUBTASK_ADD", payload: { newbie } });
   };
 

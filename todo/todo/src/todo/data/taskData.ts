@@ -17,7 +17,7 @@ class TaskData {
   name?: string;
   rewards?: string;
   category: Category;
-  limit?: Date;
+  limit: Date;
   note?: string;
   parent?: string;
   children?: string[];
